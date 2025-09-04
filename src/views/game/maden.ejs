@@ -1,0 +1,25 @@
+        <div class="game-card" data-modal-id="miningModal">
+            <div class="icon-container">⛏️</div>
+            <div>
+                <h3>Madencilik</h3>
+                <p class="description">Değerli madenler çıkar!</p>
+            </div>
+            <button class="play-button">Oyna</button>
+        </div>
+
+    <div id="miningModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-button" data-modal-id="miningModal">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Madencilik Oyunu</h2>
+            <div id="miningControlsContainer">
+                <button id="miningDevModeToggle">DEV Modu: KAPALI</button>
+                <span id="playerCoinText" class="player-coins">Coin: 100000</span> 
+            </div>
+            <div id="miningSkillsSection" class="mb-4 flex flex-wrap justify-center gap-2">
+                <button id="skillFasterMining" class="mining-skill-button" data-cost="10000">Hızlı Kazı (10K Coin)</button>
+                <button id="skillLuckBoost" class="mining-skill-button" data-cost="20000">Şans Arttır (20K Coin)</button>
+                <button id="skillX2Miner" class="mining-skill-button" data-cost="30000">x2 Madenci (30K Coin)</button>
+            </div>
+            <canvas id="miningCanvas" class="game-canvas"></canvas>
+        </div>
+    </div>
