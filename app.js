@@ -160,6 +160,5 @@ path: req.path,
 isStaff,
 reqMember: req.user ? client.guilds.cache.get(conf.guildID).members.cache.get(req.user.id) : null
 });
-});
 
 client.login(settings.token).catch((err) => console.log(err));
