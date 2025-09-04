@@ -1,0 +1,536 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Oyun Merkezi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0c12; /* Resimdeki çok koyu arka plan */
+            color: #d1d5db; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 40px; /* Başlık için yer */
+        }
+
+        .header-banner {
+            width: 100%;
+            max-width: 900px; /* İçeriğe göre ayarlanabilir */
+            padding: 30px 20px;
+            margin-bottom: 40px;
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed); /* Mor gradient */
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .header-banner h1 {
+            font-size: 2.5rem; /* 4xl */
+            font-weight: 700; /* bold */
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .header-banner p {
+            font-size: 1rem;
+            color: #e0e0ff; /* Biraz daha açık morumsu beyaz */
+        }
+
+        #gameSelectionScreen {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px; /* Kartlar arası boşluk */
+            justify-content: center;
+            align-items: flex-start; /* Kartların üstten hizalanması */
+            max-width: 900px; /* Kartların sığacağı genişlik */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .game-card {
+            background-color: #1e1b2e; /* Resimdeki kart arka planı */
+            border: 1px solid #302d42; /* Hafif belirgin kenarlık */
+            border-radius: 12px;
+            padding: 25px;
+            width: 260px; /* Kart genişliği */
+            min-height: 220px; /* Kart yüksekliği */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; /* İçeriği dikeyde yay */
+            text-align: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(79, 70, 229, 0.2); /* Mor hover gölgesi */
+        }
+        .game-card .icon-container {
+            background-color: #2a273f; /* İkon arka planı */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #a79eff; /* İkon rengi */
+            font-size: 2.2rem; /* İkon boyutu */
+        }
+        .game-card h3 { 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: #c3c1d8; /* Başlık rengi */
+            margin-bottom: 8px; 
+        }
+        .game-card p.description { 
+            font-size: 0.85rem; 
+            color: #827fa8; /* Açıklama rengi */
+            margin-bottom: 15px; 
+            flex-grow: 1; /* Açıklamanın alanı doldurmasını sağlar */
+        }
+        .game-card .play-button {
+            background-color: #4f46e5; /* Mor buton */
+            color: white;
+            font-weight: 500;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            align-self: stretch; /* Butonun kart genişliğine yayılması */
+        }
+        .game-card .play-button:hover {
+            background-color: #6366f1; /* Açık mor hover */
+        }
+        .game-card.soon .icon-container {
+            color: #6b7280; /* "Yakında" ikon rengi */
+        }
+        .game-card.soon .play-button {
+            background-color: #374151; /* Gri buton */
+            cursor: not-allowed;
+        }
+
+
+        .modal {
+            display: none; 
+            position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(13, 12, 18, 0.85); /* Daha koyu modal arka planı */
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: #1e1b2e; 
+            margin: 5% auto; padding: 30px; border: 1px solid #302d42; border-radius: 12px;
+            width: 90%; max-width: 800px; 
+            position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideIn 0.3s ease-out;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .close-modal-button {
+            color: #9ca3af; position: absolute; top: 20px; right: 30px;
+            font-size: 28px; font-weight: bold; cursor: pointer;
+        }
+        .close-modal-button:hover, .close-modal-button:focus { color: #e5e7eb; }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        #controlsContainer, #rpsControlsContainer, #miningControlsContainer, #passwordGuessControlsContainer, #flappyBirdControlsContainer {
+            margin-bottom: 15px; padding: 10px; background-color: #2a273f; border-radius: 8px;
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; 
+        }
+        #devModeToggle, #rpsDevModeToggle, #miningDevModeToggle, #passwordGuessDevModeToggle, #flappyBirdDevModeToggle {
+            padding: 10px 15px; font-size: 0.875rem; color: white; background-color: #4b5563;
+            border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;
+        }
+        #devModeToggle:hover, #rpsDevModeToggle:hover, #miningDevModeToggle:hover, #passwordGuessDevModeToggle:hover, #flappyBirdDevModeToggle:hover { background-color: #6b7280; }
+        #devModeToggle.active, #rpsDevModeToggle.active, #miningDevModeToggle.active, #passwordGuessDevModeToggle.active, #flappyBirdDevModeToggle.active { background-color: #4f46e5; }
+        
+        .game-canvas { border: 2px solid #302d42; border-radius: 8px; background-color: #110f1d; }
+        .game-html-content { 
+            width: 100%;
+            max-width: 550px; 
+            padding: 20px;
+            background-color: #110f1d;
+            border-radius: 8px;
+            border: 2px solid #302d42;
+            color: #d1d5db;
+            text-align: center;
+        }
+
+        .reward-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: #2a273f; color: #e5e7eb; padding: 30px; border-radius: 10px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6); z-index: 1001; text-align: center;
+            display: none; border: 1px solid #4b5563; width: 90%; max-width: 400px;
+        }
+        .reward-popup h3 { margin-top: 0; font-size: 1.75rem; color: #a79eff; }
+        .reward-popup p { font-size: 1.125rem; margin-bottom: 15px; }
+        .reward-popup img { max-width: 120px; max-height: 120px; margin: 20px auto; display: block; border-radius: 8px; background-color: #4b5563; padding: 5px; }
+        .reward-popup button {
+            padding: 12px 24px; font-size: 1rem; color: white; background-color: #4f46e5;
+            border: none; border-radius: 6px; cursor: pointer; margin-top: 20px; transition: background-color 0.3s;
+        }
+        .reward-popup button:hover { background-color: #6366f1; }
+
+        #rpsGameModeSelection button, .rps-choice-button {
+            padding: 10px 20px; font-size: 1rem; color: white; background-color: #4f46e5;
+            border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; margin: 5px;
+        }
+        #rpsGameModeSelection button:hover, .rps-choice-button:hover { background-color: #6366f1; }
+        #rpsGameModeSelection button:disabled { background-color: #4b5563; cursor: not-allowed; }
+        
+        .mining-skill-button {
+            padding: 8px 12px; font-size: 0.875rem; color: white; background-color: #6366f1; 
+            border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; margin: 5px;
+        }
+        .mining-skill-button:hover { background-color: #818cf8; }
+        .mining-skill-button:disabled { background-color: #4b5563; cursor: not-allowed; opacity: 0.7; }
+
+        .player-coins { font-size: 0.875rem; color: #fbbf24; margin-left: auto; }
+
+        #passwordInputContainer { display: flex; justify-content: center; gap: 5px; margin: 20px 0; }
+        .password-digit-input { width: 40px; height: 50px; text-align: center; font-size: 1.8rem; border: 2px solid #4b5563; background-color: #374151; color: #e5e7eb; border-radius: 6px; outline: none; caret-color: #60a5fa; }
+        .password-digit-input:focus { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5); }
+        #hintDisplay { font-size: 0.9rem; margin-bottom: 20px; color: #a5b4fc; font-style: italic; text-align: left; padding-left: 10px; max-height: 120px; overflow-y: auto; background-color: #1f2937; border: 1px solid #374151; border-radius: 6px; padding: 10px; }
+        #hintDisplay ul { list-style-type: disc; padding-left: 20px; margin: 0; }
+        #hintDisplay li { margin-bottom: 4px; }
+        #submitGuessButton { padding: 10px 20px; font-size: 1rem; color: white; background-color: #10b981; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
+        #submitGuessButton:hover { background-color: #34d399; }
+        #submitGuessButton:disabled { background-color: #4b5563; cursor: not-allowed; }
+        #passwordGuessResult { margin-top: 15px; font-size: 1rem; font-weight: 600;}
+        #passwordAttemptsLeft { font-size: 0.875rem; color: #9ca3af; margin-top: 5px;}
+        #passwordInfoText { margin-bottom: 5px; font-size: 0.9rem; color: #9ca3af;}
+
+        #flappyBirdCanvas { 
+            background-color: #70c5ce; 
+        }
+        #flappyBirdScoreText { font-size: 1rem; color: #fbbf24; margin-left: 10px; }
+        #flappyBirdStartButton { padding: 10px 20px; font-size: 1rem; color: white; background-color: #22c55e; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; margin: 5px; }
+        #flappyBirdStartButton:hover { background-color: #16a34a; }
+
+    </style>
+</head>
+
+<body>
+
+        <div class="header-banner">
+        <h1>Mini Oyun Merkezi</h1>
+        <p>Eğlenceli oyunlar oyna, ödüller kazan ve yeteneklerini geliştir!</p>
+    </div>
+
+    <%- include('game/gunluk', {bot, user, path}) %>
+    <%- include('game/taskagitmakas', {bot, user, path}) %>
+    <%- include('game/maden', {bot, user, path}) %>
+    <%- include('game/password', {bot, user, path}) %>
+    <%- include('game/flappy', {bot, user, path}) %>
+    <%- include('game/comingsoon', {bot, user, path}) %>
+
+
+</body>
+
+    <div id="rewardPopup" class="reward-popup">
+        <h3 id="popupTitle">Tebrikler!</h3>
+        <img id="popupImage" src="" alt="Ödül Resmi">
+        <p id="popupMessage">Bir ödül kazandın!</p>
+        <button id="closePopupButton">Harika!</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- GENEL MODAL VE POPUP KONTROLLERİ ---
+            const rewardPopup = document.getElementById('rewardPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupImage = document.getElementById('popupImage');
+            const popupMessage = document.getElementById('popupMessage');
+            const closePopupButton = document.getElementById('closePopupButton');
+
+            if (closePopupButton) {
+                closePopupButton.addEventListener('click', () => {
+                    if(rewardPopup) rewardPopup.style.display = 'none';
+                    const activeModalId = document.querySelector('.modal[style*="display: block"]')?.id;
+                    if (activeModalId) {
+                        switch (activeModalId) {
+                            case 'dailyRewardModal':
+                                if (dailyRewardGame && typeof dailyRewardGame.updateUserMessageAfterPopup === 'function') dailyRewardGame.updateUserMessageAfterPopup();
+                                break;
+                            case 'rpsModal':
+                                if (rpsGame && typeof rpsGame.updateUserMessageAfterPopup === 'function') rpsGame.updateUserMessageAfterPopup();
+                                break;
+                            case 'miningModal':
+                                if (miningGame && typeof miningGame.updateUserMessageAfterPopup === 'function') miningGame.updateUserMessageAfterPopup();
+                                break;
+                            case 'passwordGuessModal':
+                                if (passwordGuessGame && typeof passwordGuessGame.updateUserMessageAfterPopup === 'function') passwordGuessGame.updateUserMessageAfterPopup();
+                                break;
+                            case 'flappyBirdModal':
+                                if (flappyBirdGame && typeof flappyBirdGame.updateUserMessageAfterPopup === 'function') flappyBirdGame.updateUserMessageAfterPopup();
+                                break;
+                        }
+                    }
+                });
+            }
+
+            function showGenericRewardPopup(title, message, imageUrl) {
+                if (popupTitle) popupTitle.textContent = title;
+                if (popupMessage) popupMessage.textContent = message;
+                if (popupImage) {
+                    popupImage.src = imageUrl || 'https://placehold.co/80x80/cccccc/000000?text=?';
+                    popupImage.alt = title;
+                }
+                if (rewardPopup) rewardPopup.style.display = 'block';
+            }
+            const globalItemPools = {
+                low: [{ name: "Acemi Sancağı", type: "banner", image: "https://placehold.co/80x80/708090/FFFFFF?text=Sancak" },{ name: "Gülümseyen Yüz", type: "avatar", image: "https://placehold.co/80x80/FFD700/000000?text=Avatar" },{ name: "Tahta Kılıç", type: "item", image: "https://placehold.co/80x80/A0522D/FFFFFF?text=Kılıç" }],
+                medium: [{ name: "Demir Miğfer", type: "item", image: "https://placehold.co/80x80/C0C0C0/000000?text=Miğfer" }],
+                high: [{ name: "Ejderha Zırhı", type: "item", image: "https://placehold.co/80x80/800000/FFFFFF?text=Zırh" },{ name: "Kahraman Pelerini", type: "banner", image: "https://placehold.co/80x80/00008B/FFFFFF?text=Pelerin" }],
+                rare: [{ name: "Efsanevi Asa", type: "item", image: "https://placehold.co/80x80/FF4500/FFFFFF?text=Asa" },{ name: "Mistik Anka Kuşu", type: "avatar", image: "https://placehold.co/80x80/4B0082/FFFFFF?text=Anka" }],
+                chests: { low: { name: "Düşük Seviyeli Sandık", type: "chest", image: "https://placehold.co/80x80/A9A9A9/FFFFFF?text=Düşük+S." }, medium: { name: "Orta Seviyeli Kasa", type: "chest", image: "https://placehold.co/80x80/696969/FFFFFF?text=Orta+K." }, high: { name: "Yüksek Seviyeli Kasa", type: "chest", image: "https://placehold.co/80x80/2F4F4F/FFFFFF?text=Yüksek+K." }}
+            };
+            const globalIconPlaceholders = { xp: "https://placehold.co/80x80/FFFF00/000000?text=XP", coin: "https://placehold.co/80x80/FFD700/000000?text=COIN", premium: "https://placehold.co/80x80/8A2BE2/FFFFFF?text=PREMIUM"};
+            function getRandomInt(min, max) { min = Math.ceil(min); max = Math.floor(max); return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+            // --- OYUN SINIFI TANIMLAMALARI ---
+
+            // --- GÜNLÜK ÖDÜL OYUNU ---
+            const dailyRewardCanvas = document.getElementById('dailyRewardCanvas');
+            const dailyRewardCtx = dailyRewardCanvas ? dailyRewardCanvas.getContext('2d') : null;
+            const dailyRewardDevModeToggle = document.getElementById('devModeToggle');
+            let dailyRewardGame = null; 
+            function DailyRewardGame() {
+                this.canvas = dailyRewardCanvas; this.ctx = dailyRewardCtx; this.devModeToggle = dailyRewardDevModeToggle; this.isDevMode = false; this.canOpenChestToday = true; this.lastReward = null; this.messageToUser = "Sandığı açmak için tıkla!"; this.isLoading = false; this.animationFrameId = null;
+                // Erken return kaldırıldı. Metodlar her zaman tanımlanacak.
+                if (!this.canvas || !this.ctx) { console.error("Daily Reward Canvas or Context not found for DailyRewardGame instance! Game will not function properly.");}
+                
+                this.canvas.width = 500; this.canvas.height = 375;
+                this.chest = { x: this.canvas.width / 2 - 60, y: this.canvas.height / 2 - 100, width: 120, height: 120, imageClosed: new Image(), imageOpen: new Image(), isOpening: false, animation: { currentFrame: 0, totalFrames: 60, shakeIntensity: 3, originalX: this.canvas.width / 2 - 60, originalY: this.canvas.height / 2 - 100, } };
+                this.chest.imageClosed.src = 'https://placehold.co/120x120/8B4513/FFFFFF?text=Sandık'; this.chest.imageOpen.src = 'https://placehold.co/120x120/D2691E/FFFFFF?text=Açık!';
+                this.openButton = { x: this.canvas.width / 2 - 100, y: this.chest.y + this.chest.height + 25, width: 200, height: 50, text: "Sandığı Aç!", baseColor: '#4f46e5', hoverColor: '#6366f1', disabledColor: '#4b5563', loadingColor: '#3b82f6', pressed: false, isHovered: false };
+                
+                this.init = () => {
+                    if (!this.ctx) return; // init içinde ctx kontrolü
+                    this.chest.animation.originalX = this.canvas.width / 2 - this.chest.width / 2; this.chest.animation.originalY = this.canvas.height / 2 - this.chest.height / 2 - 30; this.chest.x = this.chest.animation.originalX; this.chest.y = this.chest.animation.originalY; this.openButton.y = this.chest.y + this.chest.height + 25;
+                    if (this.devModeToggle) { this.devModeToggle.addEventListener('click', this.toggleDevMode); } else { console.error("Daily Reward DEV Mode Toggle not found for event listener!"); }
+                    this.canvas.addEventListener('mousemove', this.handleMouseMove); this.canvas.addEventListener('mousedown', this.handleMouseDown); this.canvas.addEventListener('mouseup', this.handleMouseUp); this.canvas.addEventListener('mouseleave', this.handleMouseLeave);
+                    let imagesToLoad = [this.chest.imageClosed, this.chest.imageOpen]; let loadedCount = 0;
+                    const startDrawLoopIfReady = () => { loadedCount++; if (loadedCount === imagesToLoad.length && !this.animationFrameId) { this.mainDrawLoop(); } };
+                    imagesToLoad.forEach(img => { img.onloadcalled = false; img.onload = () => { if (!img.onloadcalled) { img.onloadcalled = true; startDrawLoopIfReady(); } }; if (img.complete && !img.onloadcalled) { img.onloadcalled = true; startDrawLoopIfReady(); } });
+                    if (loadedCount === imagesToLoad.length && !this.animationFrameId && imagesToLoad.every(img => img.complete)) { this.mainDrawLoop(); }
+                };
+                this.determineReward = () => { const roll = getRandomInt(1, 100); let rd = {}; if (roll <= 30) { const a = getRandomInt(100, 1000); rd = { type: "xp", amount: a, name: `${a} XP`, image: globalIconPlaceholders.xp }; } else if (roll <= 60) { const a = getRandomInt(100, 10000); rd = { type: "coin", amount: a, name: `${a} Coin`, image: globalIconPlaceholders.coin }; } else if (roll <= 80) { const item = globalItemPools.low[getRandomInt(0, globalItemPools.low.length - 1)]; rd = { type: "generic_item", ...item }; } else if (roll <= 90) { if (Math.random() < 0.6) { const item = globalItemPools.medium[getRandomInt(0, globalItemPools.medium.length - 1)]; rd = { type: "generic_item", ...item }; } else { const d = getRandomInt(1, 7); rd = { type: "taxperia_premium", days: d, name: `${d} Gün Premium`, image: globalIconPlaceholders.premium }; } } else if (roll <= 99) { const sr = getRandomInt(1, 5); if (sr === 1) { const a = getRandomInt(10000, 50000); rd = { type: "coin", amount: a, name: `${a} Coin`, image: globalIconPlaceholders.coin }; } else if (sr === 2) { const a = getRandomInt(1000, 10000); rd = { type: "xp", amount: a, name: `${a} XP`, image: globalIconPlaceholders.xp }; } else if (sr === 3) { const item = globalItemPools.high[getRandomInt(0, globalItemPools.high.length - 1)]; rd = { type: "generic_item", tier: "high", ...item }; } else if (sr === 4) { rd = { type: "generic_item", tier: "high", name: "Yüksek Seviye Avatar", image: "https://placehold.co/80x80/DC143C/FFFFFF?text=Avatar+", itemType: "avatar" }; } else { rd = { type: "generic_item", tier: "high", name: "Yüksek Seviye Banner", image: "https://placehold.co/80x80/006400/FFFFFF?text=Banner+", itemType: "banner" }; } } else { const srr = getRandomInt(1, 6); if (srr === 1) { const item = globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length - 1)]; rd = { type: "generic_item", tier: "rare", ...item }; } else if (srr === 2) { rd = { type: "generic_item", tier: "rare", name: "Nadir Avatar", image: "https://placehold.co/80x80/DAA520/000000?text=Avatar++", itemType: "avatar" }; } else if (srr === 3) { rd = { type: "generic_item", tier: "rare", name: "Nadir Banner", image: "https://placehold.co/80x80/483D8B/FFFFFF?text=Banner++", itemType: "banner" }; } else if (srr === 4) { const d = getRandomInt(15, 30); rd = { type: "taxperia_premium", days: d, name: `${d} Gün Premium`, image: globalIconPlaceholders.premium }; } else if (srr === 5) { rd = { type: "xp", amount: 1000000, name: "1 Milyon XP!", image: globalIconPlaceholders.xp }; } else { rd = { type: "coin", amount: 1000000, name: "1 Milyon Coin!", image: globalIconPlaceholders.coin }; } } return rd; };
+                this.drawChest = () => { if (!this.ctx) return; let cI = this.chest.imageClosed; let x = this.chest.animation.originalX; let y = this.chest.animation.originalY; if (this.chest.isOpening && this.chest.animation.currentFrame < this.chest.animation.totalFrames) { const p = this.chest.animation.currentFrame / this.chest.animation.totalFrames; if (p < 0.7) { const sX = Math.sin(this.chest.animation.currentFrame * 0.5) * this.chest.animation.shakeIntensity; x += sX; const bY = Math.sin(this.chest.animation.currentFrame * 0.3) * (this.chest.animation.shakeIntensity / 2); y -= bY; } else { cI = this.chest.imageOpen; } } else if (this.chest.isOpening && this.chest.animation.currentFrame >= this.chest.animation.totalFrames) { cI = this.chest.imageOpen; } this.ctx.drawImage(cI, x, y, this.chest.width, this.chest.height); };
+                this.drawOpenButton = () => { if (!this.ctx) return; let cBC = this.openButton.baseColor; const iA = (this.canOpenChestToday || this.isDevMode) && !this.isLoading && !this.chest.isOpening; if (this.isLoading) cBC = this.openButton.loadingColor; else if (!iA) cBC = this.openButton.disabledColor; else if (this.openButton.pressed) cBC = this.openButton.hoverColor; else if (this.openButton.isHovered) cBC = this.openButton.hoverColor; this.ctx.fillStyle = cBC; this.ctx.beginPath(); const bR = 8; this.ctx.moveTo(this.openButton.x + bR, this.openButton.y); this.ctx.lineTo(this.openButton.x + this.openButton.width - bR, this.openButton.y); this.ctx.quadraticCurveTo(this.openButton.x + this.openButton.width, this.openButton.y, this.openButton.x + this.openButton.width, this.openButton.y + bR); this.ctx.lineTo(this.openButton.x + this.openButton.width, this.openButton.y + this.openButton.height - bR); this.ctx.quadraticCurveTo(this.openButton.x + this.openButton.width, this.openButton.y + this.openButton.height, this.openButton.x + this.openButton.width - bR, this.openButton.y + this.openButton.height); this.ctx.lineTo(this.openButton.x + bR, this.openButton.y + this.openButton.height); this.ctx.quadraticCurveTo(this.openButton.x, this.openButton.y + this.openButton.height, this.openButton.x, this.openButton.y + this.openButton.height - bR); this.ctx.lineTo(this.openButton.x, this.openButton.y + bR); this.ctx.quadraticCurveTo(this.openButton.x, this.openButton.y, this.openButton.x + bR, this.openButton.y); this.ctx.closePath(); this.ctx.fill(); if (iA && !this.openButton.pressed) { this.ctx.shadowColor = 'rgba(0,0,0,0.3)'; this.ctx.shadowBlur = 5; this.ctx.shadowOffsetY = 2; this.ctx.fill(); this.ctx.shadowColor = 'transparent'; } this.ctx.fillStyle = 'white'; this.ctx.font = 'bold 1rem Inter'; this.ctx.textAlign = 'center'; this.ctx.textBaseline = 'middle'; let tTS = this.openButton.text; if (this.isLoading) tTS = "Açılıyor..."; else if (!this.canOpenChestToday && !this.isDevMode) tTS = "Yarın Tekrar Dene!"; this.ctx.fillText(tTS, this.openButton.x + this.openButton.width / 2, this.openButton.y + this.openButton.height / 2 + (this.openButton.pressed ? 1 : 0)); };
+                this.drawUserMessage = () => { if (!this.ctx) return; this.ctx.fillStyle = '#9ca3af'; this.ctx.font = '0.875rem Inter'; this.ctx.textAlign = 'center'; this.ctx.fillText(this.messageToUser, this.canvas.width / 2, this.openButton.y + this.openButton.height + 25); };
+                this.updateUserMessageAfterPopup = () => { if (!this.canOpenChestToday && !this.isDevMode) { this.messageToUser = "Günlük hakkını kullandın. Yarın tekrar gel."; } else { this.messageToUser = "Sandığı açmak için tıkla!"; } this.chest.isOpening = false; this.chest.animation.currentFrame = 0; };
+                this.mainDrawLoop = () => { if (!this.ctx) return; this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.drawChest(); this.drawOpenButton(); this.drawUserMessage(); if (this.chest.isOpening && this.chest.animation.currentFrame < this.chest.animation.totalFrames) { this.chest.animation.currentFrame++; } this.animationFrameId = requestAnimationFrame(this.mainDrawLoop); };
+                this.startChestOpeningProcess = () => { this.isLoading = true; this.chest.isOpening = true; this.chest.animation.currentFrame = 0; setTimeout(() => { this.lastReward = this.determineReward(); this.isLoading = false; if (!this.isDevMode) this.canOpenChestToday = false; this.messageToUser = `Kazandın: ${this.lastReward.name || 'bir eşya'}!`; showGenericRewardPopup("Tebrikler!", this.messageToUser, this.lastReward.image); }, (this.chest.animation.totalFrames / 60 * 1000) + 500); };
+                this.toggleDevMode = () => { this.isDevMode = !this.isDevMode; if (this.devModeToggle) { this.devModeToggle.textContent = `DEV Modu: ${this.isDevMode ? 'AÇIK' : 'KAPALI'}`; this.devModeToggle.classList.toggle('active', this.isDevMode); } if (this.isDevMode) { this.canOpenChestToday = true; this.messageToUser = "DEV Modu Aktif. Sandığı açabilirsin."; } else { if (!this.canOpenChestToday) this.messageToUser = "Günlük hakkını kullandın. Yarın tekrar gel."; else this.messageToUser = "Sandığı açmak için tıkla!"; } this.lastReward = null; this.chest.isOpening = false; this.chest.animation.currentFrame = 0; };
+                this.handleMouseMove = (e) => { if (this.isLoading || this.chest.isOpening) { this.openButton.isHovered = false; return; } const r = this.canvas.getBoundingClientRect(); const mX = e.clientX - r.left; const mY = e.clientY - r.top; const iA = (this.canOpenChestToday || this.isDevMode); if (iA && mX >= this.openButton.x && mX <= this.openButton.x + this.openButton.width && mY >= this.openButton.y && mY <= this.openButton.y + this.openButton.height) { this.openButton.isHovered = true; this.canvas.style.cursor = 'pointer'; } else { this.openButton.isHovered = false; this.canvas.style.cursor = 'default'; } };
+                this.handleMouseDown = (e) => { if (this.isLoading || this.chest.isOpening || !this.openButton.isHovered) return; this.openButton.pressed = true; };
+                this.handleMouseUp = (e) => { if (this.isLoading || this.chest.isOpening || !this.openButton.pressed) { this.openButton.pressed = false; return; } this.openButton.pressed = false; const r = this.canvas.getBoundingClientRect(); const mX = e.clientX - r.left; const mY = e.clientY - r.top; if (mX >= this.openButton.x && mX <= this.openButton.x + this.openButton.width && mY >= this.openButton.y && mY <= this.openButton.y + this.openButton.height) { if (!this.isDevMode && !this.canOpenChestToday) { this.messageToUser = "Günlük hakkını zaten kullandın. Yarın tekrar gel."; return; } this.startChestOpeningProcess(); } };
+                this.handleMouseLeave = () => { this.openButton.isHovered = false; this.openButton.pressed = false; };
+                this.start = () => { if (!this.animationFrameId && this.ctx) this.init(); }; this.stop = () => { if (this.animationFrameId) { cancelAnimationFrame(this.animationFrameId); this.animationFrameId = null; } };
+            }
+            
+            // --- TAŞ KAĞIT MAKAS OYUNU ---
+            const rpsCanvas = document.getElementById('rpsCanvas');
+            const rpsCtx = rpsCanvas ? rpsCanvas.getContext('2d') : null;
+            const rpsDevModeToggle = document.getElementById('rpsDevModeToggle');
+            const playRpsWithBotButton = document.getElementById('playRpsWithBotButton');
+            const rpsPlaysRemainingText = document.getElementById('rpsPlaysRemainingText');
+            let rpsGame = null; 
+            function RockPaperScissorsGame() {
+                this.canvas = rpsCanvas; this.ctx = rpsCtx; this.devModeToggle = rpsDevModeToggle; this.isDevMode = false; this.playsRemaining = 3; this.costToPlay = 1000; this.playerChoice = null; this.botChoice = null; this.resultMessage = "Seçimini Yap!"; this.isLoading = false; this.animationFrameId = null; this.gamePhase = "selection"; 
+                if (!this.canvas || !this.ctx) { console.error("RPS Canvas or Context not found!"); return; }
+                this.canvas.width = 600; this.canvas.height = 400;
+                this.choices = ["rock", "paper", "scissors"]; this.choiceEmojis = { rock: "Taş ✊", paper: "Kağıt ✋", scissors: "Makas ✌️" }; this.choiceButtons = [];
+                this.init = () => {
+                    this.updatePlaysRemainingDisplay();
+                    if(this.devModeToggle) { this.devModeToggle.addEventListener('click', this.toggleDevMode); } else { console.error("RPS DEV Mode Toggle not found for event listener!"); }
+                    if(playRpsWithBotButton) { playRpsWithBotButton.onclick = () => { if (this.playsRemaining > 0 || this.isDevMode) { this.gamePhase = "player_choosing"; this.resultMessage = `Bot ile Oyna! (Bedel: ${this.costToPlay} Coin). Seçimini yap.`; this.playerChoice = null; this.botChoice = null; } else { this.resultMessage = "Bugünlük oynama hakkın bitti!"; } }; }
+                    this.canvas.addEventListener('click', this.handleCanvasClick);
+                    const bW = 100; const bH = 50; const g = 20; const tW = (bW * 3) + (g * 2); let sX = (this.canvas.width - tW) / 2;
+                    this.choices.forEach(c => { this.choiceButtons.push({ id: c, text: this.choiceEmojis[c], x: sX, y: this.canvas.height - bH - 30, width: bW, height: bH }); sX += bW + g; });
+                    this.mainDrawLoop();
+                };
+                this.updatePlaysRemainingDisplay = () => { if(rpsPlaysRemainingText) rpsPlaysRemainingText.textContent = `Kalan Hak: ${this.isDevMode ? 'Sınırsız' : this.playsRemaining}`; };
+                this.determineRpsReward = () => { const r = getRandomInt(1, 100); let rw = {}; if (r <= 30) { if (Math.random() < 0.5) rw = { type: "xp", amount: getRandomInt(100, 10000), name: `${getRandomInt(100,10000)} XP`, image: globalIconPlaceholders.xp}; else rw = { type: "coin", amount: getRandomInt(1000, 10000), name: `${getRandomInt(1000,10000)} Coin`, image: globalIconPlaceholders.coin}; } else if (r <= 60) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.low, tier: "low" }; else if (tR === 2) rw = { ...globalItemPools.low[getRandomInt(0,1)], tier: "low" }; else rw = { ...globalItemPools.low[2], tier: "low" }; } else if (r <= 90) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.medium, tier: "medium" }; else if (tR === 2) rw = { name: "Orta Seviye Avatar", type:"avatar", image: "https://placehold.co/80x80/FFA500/000000?text=Avatar Orta", tier: "medium" }; else rw = { name: "Orta Seviye Banner", type:"banner", image: "https://placehold.co/80x80/FFC0CB/000000?text=Banner Orta", tier: "medium" }; } else if (r <= 99) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.high, tier: "high" }; else if (tR === 2) rw = { ...globalItemPools.high[getRandomInt(0,1)], tier: "high" }; else rw = { ...globalItemPools.high[0], tier: "high" }; } else { const tR = getRandomInt(1,4); if (tR === 1) rw = { type: "xp", amount: getRandomInt(10000,20000), name: `${getRandomInt(10000,20000)} XP`, image: globalIconPlaceholders.xp}; else if (tR === 2) rw = { type: "coin", amount: getRandomInt(10000,20000), name: `${getRandomInt(10000,20000)} Coin`, image: globalIconPlaceholders.coin}; else if (tR === 3) rw = { ...globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length -1)], tier: "rare" }; else rw = { ...globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length -1)], tier: "rare" }; } return rw; };
+                this.playRound = (pC) => { if (this.isLoading || this.gamePhase !== "player_choosing") return; if (!this.isDevMode && this.playsRemaining <= 0) { this.resultMessage = "Bugünlük oynama hakkın bitti!"; return; } this.isLoading = true; this.playerChoice = pC; this.botChoice = this.choices[getRandomInt(0, 2)]; this.gamePhase = "reveal"; if (!this.isDevMode) this.playsRemaining--; this.updatePlaysRemainingDisplay(); setTimeout(() => { this.isLoading = false; this.gamePhase = "result"; const p = this.playerChoice, b = this.botChoice; if (p === b) this.resultMessage = "Berabere!"; else if ((p === "rock" && b === "scissors") || (p === "paper" && b === "rock") || (p === "scissors" && b === "paper")) { this.resultMessage = "Kazandın!"; const rw = this.determineRpsReward(); setTimeout(() => showGenericRewardPopup("Taş Kağıt Makas Ödülü!", `Kazandın: ${rw.name}`, rw.image), 100); } else { this.resultMessage = "Kaybettin!"; } }, 1500); };
+                this.drawRpsScene = () => { if (!this.ctx) return; this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.ctx.textAlign = 'center'; this.ctx.fillStyle = '#d1d5db'; this.ctx.font = '1.2rem Inter'; this.ctx.fillText(this.resultMessage, this.canvas.width / 2, 50); if (this.gamePhase === "player_choosing") { this.choiceButtons.forEach(b => { this.ctx.fillStyle = '#4f46e5'; this.ctx.fillRect(b.x, b.y, b.width, b.height); this.ctx.fillStyle = 'white'; this.ctx.font = '1rem Inter'; this.ctx.fillText(b.text, b.x + b.width / 2, b.y + b.height / 2); }); } if (this.playerChoice && (this.gamePhase === "reveal" || this.gamePhase === "result")) { this.ctx.font = '2rem Inter'; this.ctx.fillText(`Sen: ${this.choiceEmojis[this.playerChoice]}`, this.canvas.width / 4, this.canvas.height / 2 - 20); } if (this.botChoice && (this.gamePhase === "reveal" || this.gamePhase === "result")) { this.ctx.font = '2rem Inter'; this.ctx.fillText(`Bot: ${this.choiceEmojis[this.botChoice]}`, this.canvas.width * 3 / 4, this.canvas.height / 2 - 20); } if (this.isLoading && this.gamePhase === "reveal") { this.ctx.font = '1.5rem Inter'; this.ctx.fillText("...", this.canvas.width / 2, this.canvas.height / 2 + 30); } };
+                this.updateUserMessageAfterPopup = () => { if (this.playsRemaining > 0 || this.isDevMode) { this.gamePhase = "player_choosing"; this.resultMessage = `Bot ile Oyna! (Bedel: ${this.costToPlay} Coin). Seçimini yap.`; this.playerChoice = null; this.botChoice = null; } else { this.resultMessage = "Bugünlük oynama hakkın bitti!"; this.gamePhase = "ended"; } };
+                this.mainDrawLoop = () => { if (!this.ctx) return; this.drawRpsScene(); this.animationFrameId = requestAnimationFrame(this.mainDrawLoop); };
+                this.toggleDevMode = () => { this.isDevMode = !this.isDevMode; if (this.devModeToggle) { this.devModeToggle.textContent = `DEV Modu: ${this.isDevMode ? 'AÇIK' : 'KAPALI'}`; this.devModeToggle.classList.toggle('active', this.isDevMode); } this.updatePlaysRemainingDisplay(); if (this.isDevMode || this.playsRemaining > 0) { this.gamePhase = "player_choosing"; this.resultMessage = `Bot ile Oyna! (Bedel: ${this.costToPlay} Coin). Seçimini yap.`; } else { this.resultMessage = "Bugünlük oynama hakkın bitti!"; } };
+                this.handleCanvasClick = (e) => { if (this.gamePhase !== "player_choosing" || this.isLoading) return; const r = this.canvas.getBoundingClientRect(); const mX = e.clientX - r.left; const mY = e.clientY - r.top; this.choiceButtons.forEach(b => { if (mX >= b.x && mX <= b.x + b.width && mY >= b.y && mY <= b.y + b.height) { this.playRound(b.id); } }); };
+                this.start = () => { if (!this.animationFrameId && this.ctx) this.init(); }; this.stop = () => { if (this.animationFrameId) { cancelAnimationFrame(this.animationFrameId); this.animationFrameId = null; } };
+            }
+
+            // --- MADENCİLİK OYUNU ---
+            const miningCanvas = document.getElementById('miningCanvas');
+            const miningCtx = miningCanvas ? miningCanvas.getContext('2d') : null;
+            const miningDevModeToggle = document.getElementById('miningDevModeToggle');
+            const playerCoinText = document.getElementById('playerCoinText');
+            const skillButtons = { fasterMining: document.getElementById('skillFasterMining'), luckBoost: document.getElementById('skillLuckBoost'), x2Miner: document.getElementById('skillX2Miner') };
+            let miningGame = null;
+            function MiningGame() {
+                this.canvas = miningCanvas; this.ctx = miningCtx; this.devModeToggle = miningDevModeToggle; this.isDevMode = false; this.playerCoins = 100000; this.baseMiningDuration = 3*60*60; this.currentMiningDuration = this.baseMiningDuration; this.miningCost = 1000; this.isMining = false; this.miningEndTime = 0; this.lastMinedOre = null; this.message = "Kazı yapmak için butona tıkla!"; this.animationFrameId = null;
+                if (!this.canvas || !this.ctx) { console.error("Mining Canvas or Context not found!"); return; }
+                this.skills = { fasterMining: { purchased: false, cost: 10000, timeReduction: 30 * 60 }, luckBoost: { purchased: false, cost: 20000 }, x2Miner: { purchased: false, cost: 30000 } };
+                this.ores = [ { name: "Kömür", image: "https://placehold.co/80x80/36454F/FFFFFF?text=Kömür", baseProb: 40, reward: () => ({ type: Math.random() < 0.5 ? "xp" : "coin", amount: getRandomInt(1000, 10000) }) }, { name: "Bakır", image: "https://placehold.co/80x80/B87333/FFFFFF?text=Bakır", baseProb: 30, reward: () => ({ type: "generic_item", ...globalItemPools.low[getRandomInt(0, globalItemPools.low.length - 1)] }) }, { name: "Demir", image: "https://placehold.co/80x80/A9A9A9/000000?text=Demir", baseProb: 20, reward: () => { const r = Math.random(); if (r < 0.5) return { type: "generic_item", ...globalItemPools.medium[getRandomInt(0, globalItemPools.medium.length - 1)] }; return { type: "taxperia_premium", days: getRandomInt(1, 7), name: `${getRandomInt(1,7)} Gün Premium`, image: globalIconPlaceholders.premium }; } }, { name: "Altın", image: "https://placehold.co/80x80/FFD700/000000?text=Altın", baseProb: 5,  reward: () => ({ type: "generic_item", ...globalItemPools.high[getRandomInt(0, globalItemPools.high.length - 1)] }) }, { name: "Elmas", image: "https://placehold.co/80x80/B9F2FF/000000?text=Elmas", baseProb: 4,  reward: () => ({ type: Math.random() < 0.5 ? "xp" : "coin", amount: getRandomInt(10000, 20000), name: `${getRandomInt(10000,20000)} ${Math.random() < 0.5 ? "XP" : "Coin"}` }) }, { name: "Platinum", image: "https://placehold.co/80x80/E5E4E2/000000?text=Platin", baseProb: 1,  reward: () => { const r = Math.random(); if (r < 0.45) return { type: "xp", amount: 250000, name: "250K XP" }; if (r < 0.9) return { type: "coin", amount: 250000, name: "250K Coin" }; return { type: "taxperia_premium", days: getRandomInt(15, 30), name: `${getRandomInt(15,30)} Gün Premium`, image: globalIconPlaceholders.premium }; } } ];
+                this.emptyChance = 0.20; 
+                this.actionButton = { x: this.canvas.width / 2 - 100, y: this.canvas.height - 180, width: 200, height: 50, text: "Kazı Yap (1000 Coin)", baseColor: '#10B981', hoverColor: '#34D399', disabledColor: '#6B7280' };
+                this.init = () => { this.canvas.width = 700; this.canvas.height = 500; this.actionButton.x = this.canvas.width / 2 - 100; this.actionButton.y = this.canvas.height - 70; if(this.devModeToggle) { this.devModeToggle.addEventListener('click', this.toggleDevMode); } else { console.error("Mining DEV Mode Toggle not found for event listener!"); } this.canvas.addEventListener('click', this.handleCanvasClick); Object.keys(skillButtons).forEach(sK => { const b = skillButtons[sK]; if(b) b.addEventListener('click', () => this.purchaseSkill(sK, parseInt(b.dataset.cost))); }); this.updatePlayerCoinsDisplay(); this.applySkillEffects(); this.updateSkillButtons(); this.mainDrawLoop(); };
+                this.updatePlayerCoinsDisplay = () => { if(playerCoinText) playerCoinText.textContent = `Coin: ${this.playerCoins}`; };
+                this.applySkillEffects = () => { this.currentMiningDuration = this.baseMiningDuration; if (this.skills.fasterMining.purchased) { this.currentMiningDuration -= this.skills.fasterMining.timeReduction; } if (this.skills.x2Miner.purchased) { this.currentMiningDuration /= 2; } this.currentMiningDuration = Math.max(30 * 60, this.currentMiningDuration); if (this.skills.luckBoost.purchased) { this.emptyChance = 0.10; } else { this.emptyChance = 0.20; } };
+                this.purchaseSkill = (sK, c) => { if (!this.skills[sK] || this.skills[sK].purchased) return; if (this.playerCoins >= c || this.isDevMode) { if (!this.isDevMode) this.playerCoins -= c; this.skills[sK].purchased = true; this.updatePlayerCoinsDisplay(); this.applySkillEffects(); this.updateSkillButtons(); const bTC = skillButtons[sK] ? skillButtons[sK].textContent : sK; this.message = `${bTC.split('(')[0].trim()} satın alındı!`; } else { this.message = "Yeterli coinin yok!"; } };
+                this.updateSkillButtons = () => { Object.keys(skillButtons).forEach(sK => { const b = skillButtons[sK]; if(b && this.skills[sK]) { if (this.skills[sK].purchased) { b.textContent = `${b.textContent.split('(')[0].trim()} (Alındı)`; b.disabled = true; } else { b.textContent = `${b.textContent.split('(')[0].trim()} (${this.skills[sK].cost / 1000}K Coin)`; b.disabled = false; } } }); };
+                this.startMining = () => { if (this.isMining) { this.message = "Zaten kazı yapılıyor!"; return; } if (this.playerCoins < this.miningCost && !this.isDevMode) { this.message = "Kazı için yeterli coinin yok!"; return; } if (!this.isDevMode) this.playerCoins -= this.miningCost; this.updatePlayerCoinsDisplay(); this.isMining = true; this.miningEndTime = Date.now() + (this.isDevMode ? 5000 : this.currentMiningDuration * 1000); this.lastMinedOre = null; this.message = "Kazı başladı..."; this.actionButton.text = "Kazılıyor..."; };
+                this.collectReward = () => { if (this.isMining || !this.miningEndTime || Date.now() < this.miningEndTime) { this.message = "Kazı henüz bitmedi!"; return; } this.isMining = false; const rR = Math.random(); let fO = null; if (rR < this.emptyChance) { fO = { name: "Boş", image: "https://placehold.co/80x80/777777/FFFFFF?text=Boş" }; } else { const tOP = this.ores.reduce((s, o) => s + o.baseProb, 0); const rPR = (rR - this.emptyChance) / (1 - this.emptyChance); let cPS = 0; for(const o of this.ores) { cPS += o.baseProb / tOP; if(rPR < cPS) { fO = o; break; } } } if (!fO) fO = { name: "Boş", image: "https://placehold.co/80x80/777777/FFFFFF?text=Boş" }; this.lastMinedOre = fO; this.miningEndTime = 0; this.actionButton.text = `Kazı Yap (${this.miningCost} Coin)`; if (fO.name !== "Boş" && fO.reward) { const rw = fO.reward(); let rN = rw.name; if(!rN && rw.type && rw.amount) rN = `${rw.amount} ${rw.type.toUpperCase()}`; this.message = `${fO.name} çıkardın! Ödül: ${rN || 'bir şey'}`; if(rw.type === 'coin') this.playerCoins += rw.amount; this.updatePlayerCoinsDisplay(); showGenericRewardPopup(`${fO.name} Bulundu!`, `Ödül: ${rN || (rw.amount + ' ' + rw.type)}`, fO.image); } else { this.message = "Malesef bu sefer bir şey çıkmadı."; showGenericRewardPopup("Kazı Sonucu", "Malesef bu sefer bir şey çıkmadı.", fO.image); } };
+                this.drawMiningScene = () => { if (!this.ctx) return; this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.ctx.textAlign = 'center'; this.ctx.fillStyle = '#d1d5db'; this.ctx.font = '1.5rem Inter'; if (this.isMining && this.miningEndTime > Date.now()) { const tL = Math.max(0, Math.floor((this.miningEndTime - Date.now()) / 1000)); const h = String(Math.floor(tL / 3600)).padStart(2, '0'); const m = String(Math.floor((tL % 3600) / 60)).padStart(2, '0'); const s = String(tL % 60).padStart(2, '0'); this.ctx.fillText(`Kalan Süre: ${h}:${m}:${s}`, this.canvas.width / 2, 80); this.actionButton.text = "Kazılıyor..."; } else if (this.miningEndTime && Date.now() >= this.miningEndTime) { this.ctx.fillText("Kazı Tamamlandı!", this.canvas.width / 2, 80); this.actionButton.text = "Sonucu Al"; } else { this.ctx.fillText("Kazı Bekleniyor", this.canvas.width / 2, 80); this.actionButton.text = `Kazı Yap (${this.miningCost} Coin)`; } this.ctx.font = '1rem Inter'; this.ctx.fillText(this.message, this.canvas.width / 2, 130); if (this.lastMinedOre && this.lastMinedOre.image) { const img = new Image(); img.src = this.lastMinedOre.image; if (img.complete) this.ctx.drawImage(img, this.canvas.width / 2 - 40, 160, 80, 80); this.ctx.fillText(this.lastMinedOre.name, this.canvas.width / 2, 260); } else if (!this.isMining && !this.miningEndTime) { this.ctx.fillText("Başlamak için kazı yap.", this.canvas.width / 2, 200); } const btn = this.actionButton; this.ctx.fillStyle = (this.isMining && this.miningEndTime > Date.now()) ? btn.disabledColor : btn.baseColor; this.ctx.fillRect(btn.x, btn.y, btn.width, btn.height); this.ctx.fillStyle = 'white'; this.ctx.font = 'bold 1rem Inter'; this.ctx.fillText(btn.text, btn.x + btn.width / 2, btn.y + btn.height / 2); };
+                this.updateUserMessageAfterPopup = () => { if (!this.isMining && !this.miningEndTime) { this.message = "Tekrar kazı yapabilirsin."; } };
+                this.mainDrawLoop = () => { if (!this.ctx) return; this.drawMiningScene(); this.animationFrameId = requestAnimationFrame(this.mainDrawLoop); };
+                this.toggleDevMode = () => { this.isDevMode = !this.isDevMode; if(this.devModeToggle) { this.devModeToggle.textContent = `DEV Modu: ${this.isDevMode ? 'AÇIK' : 'KAPALI'}`; this.devModeToggle.classList.toggle('active', this.isDevMode); } this.message = `DEV Modu ${this.isDevMode ? 'aktif' : 'kapalı'}.`; };
+                this.handleCanvasClick = (e) => { const r = this.canvas.getBoundingClientRect(); const mX = e.clientX - r.left; const mY = e.clientY - r.top; const b = this.actionButton; if (mX >= b.x && mX <= b.x + b.width && mY >= b.y && mY <= b.y + b.height) { if (this.isMining && Date.now() < this.miningEndTime) {} else if (this.miningEndTime && Date.now() >= this.miningEndTime) { this.collectReward(); } else if (!this.isMining) { this.startMining(); } } };
+                this.start = () => { if (!this.animationFrameId && this.ctx) this.init(); }; this.stop = () => { if (this.animationFrameId) { cancelAnimationFrame(this.animationFrameId); this.animationFrameId = null; } };
+            }
+
+            // --- ŞİFRE TAHMİN OYUNU ---
+            const passwordGuessDevModeToggle = document.getElementById('passwordGuessDevModeToggle');
+            const passwordInfoText = document.getElementById('passwordInfoText');
+            const passwordInputContainer = document.getElementById('passwordInputContainer'); 
+            const hintDisplay = document.getElementById('hintDisplay');
+            const submitGuessButton = document.getElementById('submitGuessButton');
+            const passwordGuessResult = document.getElementById('passwordGuessResult');
+            const passwordAttemptsLeftText = document.getElementById('passwordAttemptsLeft');
+            const passwordGamePlaysRemainingText = document.getElementById('passwordGamePlaysRemainingText'); 
+            let passwordGuessGame = null;
+            function PasswordGuessGame() {
+                this.devModeToggle = passwordGuessDevModeToggle; this.isDevMode = false; this.playsRemaining = 3; this.maxAttempts = 10; this.currentAttempts = 0; this.targetPassword = ""; this.passwordLength = 0; this.givenClues = []; this.incorrectAttemptsSinceLastHint = 0; this.gameActive = false; this.digitInputs = []; this.costToPlay = 0; 
+                this.potentialClueGenerators = [ () => `Şifrenin ilk rakamı: ${this.targetPassword[0]}`, () => `Şifrenin son rakamı: ${this.targetPassword[this.targetPassword.length - 1]}`, () => { const P = parseInt(this.targetPassword); return `Şifre bir ${P % 2 === 0 ? 'çift' : 'tek'} sayıdır.`; }, () => { const uI = []; const rBP = this.givenClues.filter(c => c.match(/^\d+\. rakam:/)).map(c => parseInt(c.match(/^(\d+)\./)[1]) -1); if (this.givenClues.some(c => c.startsWith("Şifrenin ilk rakamı:"))) rBP.push(0); if (this.givenClues.some(c => c.startsWith("Şifrenin son rakamı:"))) rBP.push(this.passwordLength - 1); for (let i = 0; i < this.passwordLength; i++) { if (!rBP.includes(i)) uI.push(i); } if (uI.length > 0) { const rI = uI[getRandomInt(0, uI.length - 1)]; return `${rI + 1}. rakam: ${this.targetPassword[rI]}`; } return null; }, () => { const dD = [...new Set(this.targetPassword.split(''))]; if (dD.length === 0) return null; const rD = dD[getRandomInt(0, dD.length - 1)]; let count = this.targetPassword.split(rD).length - 1; return `Şifrede ${count} tane '${rD}' rakamı bulunmaktadır.`; } ];
+                this.shuffledClueGenerators = []; this.nextClueGeneratorIndex = 0;
+                this.init = () => { if (this.devModeToggle) { this.devModeToggle.addEventListener('click', this.toggleDevMode); } if (submitGuessButton) { if (!submitGuessButton.hasAttribute('listener-attached')) { submitGuessButton.addEventListener('click', this.handleMainButtonClick); submitGuessButton.setAttribute('listener-attached', 'true'); } } this.startNewGame(); };
+                this.handleMainButtonClick = () => { if (this.gameActive) { this.handleGuessSubmit(); } else if (this.playsRemaining > 0 || this.isDevMode) { this.startNewGame(); } else { this.displayMessage("Bugünlük oynama hakkın bitti!", "text-red-400"); } };
+                this.generateDigitInputs = () => { if (!passwordInputContainer) return; passwordInputContainer.innerHTML = ''; this.digitInputs = []; for (let i = 0; i < this.passwordLength; i++) { const input = document.createElement('input'); input.type = 'text'; input.maxLength = 1; input.classList.add('password-digit-input'); input.dataset.index = i; input.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); if (e.target.value && i < this.passwordLength - 1) { this.digitInputs[i + 1].focus(); } }); input.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !e.target.value && i > 0) { this.digitInputs[i - 1].focus(); } else if (e.key === 'ArrowLeft' && i > 0) { this.digitInputs[i - 1].focus(); } else if (e.key === 'ArrowRight' && i < this.passwordLength - 1) { this.digitInputs[i + 1].focus(); } }); passwordInputContainer.appendChild(input); this.digitInputs.push(input); } };
+                this.startNewGame = () => { if (!this.isDevMode && this.playsRemaining <= 0) { this.displayMessage("Bugünlük oynama hakkın bitti!", "text-red-400"); if(submitGuessButton) submitGuessButton.disabled = true; this.disableDigitInputs(); this.gameActive = false; return; } this.gameActive = true; this.passwordLength = getRandomInt(6, 10); this.targetPassword = ""; if (this.passwordLength > 1) { this.targetPassword += getRandomInt(1, 9).toString(); for (let i = 1; i < this.passwordLength; i++) { this.targetPassword += getRandomInt(0, 9).toString(); } } else { this.targetPassword += getRandomInt(0, 9).toString(); } this.currentAttempts = 0; this.incorrectAttemptsSinceLastHint = 0; this.givenClues = []; this.shuffledClueGenerators = [...this.potentialClueGenerators].sort(() => 0.5 - Math.random()); this.nextClueGeneratorIndex = 0; this.generateInitialClues(); this.generateDigitInputs(); this.updateDisplay(); if(submitGuessButton) { submitGuessButton.disabled = false; submitGuessButton.textContent = "Tahmin Et"; } if(this.digitInputs.length > 0) this.digitInputs[0].focus(); this.displayMessage("Yeni şifre oluşturuldu. Tahminini gir.", "text-blue-400"); this.updatePlaysRemainingDisplay(); };
+                this.generateInitialClues = () => { const P = parseInt(this.targetPassword); const L = this.passwordLength; let sumOfDigits = 0; for (let digit of this.targetPassword) { sumOfDigits += parseInt(digit); } const randomIndex = getRandomInt(0, L - 1); this.givenClues.push(`${randomIndex + 1}. rakam: ${this.targetPassword[randomIndex]}`); this.givenClues.push(`Şifredeki rakamların toplamı: ${sumOfDigits}`); const rangeFactor = Math.pow(10, Math.max(1, Math.floor(L / 2) -1) ); const lowerBound = Math.max(0, P - getRandomInt(rangeFactor, rangeFactor * 5)); const upperBound = P + getRandomInt(rangeFactor, rangeFactor * 5); this.givenClues.push(`Şifre, ${lowerBound} ile ${upperBound} arasındadır.`); };
+                this.generateAdditionalClue = () => { if (this.nextClueGeneratorIndex >= this.shuffledClueGenerators.length && this.givenClues.length >= this.potentialClueGenerators.length) { if (!this.givenClues.includes("Daha fazla ipucu yok!")) { this.givenClues.push("Daha fazla ipucu yok!"); } return; } let newClue = null; let attempts = 0; while(!newClue && attempts < this.shuffledClueGenerators.length * 2) { const generator = this.shuffledClueGenerators[this.nextClueGeneratorIndex % this.shuffledClueGenerators.length]; const potentialClue = generator(); if (potentialClue && !this.givenClues.includes(potentialClue) && !this.isClueRedundant(potentialClue)) { newClue = potentialClue; } this.nextClueGeneratorIndex++; attempts++; } if (newClue) { this.givenClues.push(newClue); } else if (!this.givenClues.includes("Daha fazla ipucu yok!")) { this.givenClues.push("Daha fazla ipucu yok!"); } };
+                this.isClueRedundant = (pC) => { if (!pC) return true; if (pC.startsWith("Şifrenin ilk rakamı:")) { return this.givenClues.some(c => c.startsWith(`1. rakam:`)); } if (pC.startsWith("Şifrenin son rakamı:")) { return this.givenClues.some(c => c.startsWith(`${this.passwordLength}. rakam:`)); } return false; };
+                this.handleGuessSubmit = () => { if (!this.gameActive || !submitGuessButton) return; let guess = ""; for (const input of this.digitInputs) { if (!input.value || !/^\d$/.test(input.value)) { this.displayMessage(`Lütfen ${this.passwordLength} haneli bir sayı girin ve tüm kutucukları doldurun.`, "text-yellow-400"); return; } guess += input.value; } this.currentAttempts++; this.incorrectAttemptsSinceLastHint++; if (guess === this.targetPassword) { this.displayMessage(`Tebrikler! Şifreyi ${this.currentAttempts}. denemede buldun: ${this.targetPassword}`, "text-green-400"); this.gameActive = false; submitGuessButton.textContent = "Yeni Oyun"; this.showCorrectPasswordAndDisableInputs(); if (!this.isDevMode) this.playsRemaining--; this.updatePlaysRemainingDisplay(); const reward = this.determinePasswordReward(); setTimeout(() => showGenericRewardPopup("Şifre Bulundu!", `Ödül: ${reward.name || (reward.amount + ' ' + (reward.type || ''))}`, reward.image), 100); } else { if (this.currentAttempts >= this.maxAttempts) { this.displayMessage(`Hakkın bitti! Doğru şifre: ${this.targetPassword}`, "text-red-400"); this.gameActive = false; submitGuessButton.textContent = "Yeni Oyun"; this.showCorrectPasswordAndDisableInputs(); if (!this.isDevMode) this.playsRemaining--; this.updatePlaysRemainingDisplay(); } else { this.displayMessage("Yanlış tahmin. Tekrar dene!", "text-orange-400"); if (this.incorrectAttemptsSinceLastHint >= 3) { this.generateAdditionalClue(); this.incorrectAttemptsSinceLastHint = 0; } } } this.updateDisplay(); };
+                this.disableDigitInputs = () => { this.digitInputs.forEach(input => input.disabled = true); }; this.showCorrectPasswordAndDisableInputs = () => { this.digitInputs.forEach((input, index) => { input.value = this.targetPassword[index]; input.disabled = true; input.classList.add('border-green-500'); }); };
+                this.determinePasswordReward = () => { const r = getRandomInt(1, 100); let rw = {}; if (r <= 30) { if (Math.random() < 0.5) rw = { type: "xp", amount: getRandomInt(100, 10000), name: `${getRandomInt(100,10000)} XP`, image: globalIconPlaceholders.xp}; else rw = { type: "coin", amount: getRandomInt(1000, 10000), name: `${getRandomInt(1000,10000)} Coin`, image: globalIconPlaceholders.coin}; } else if (r <= 60) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.low, tier: "low" }; else if (tR === 2) rw = { ...globalItemPools.low[getRandomInt(0,1)], tier: "low" }; else rw = { ...globalItemPools.low[2], tier: "low" }; } else if (r <= 90) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.medium, tier: "medium" }; else if (tR === 2) rw = { name: "Orta Seviye Avatar", type:"avatar", image: "https://placehold.co/80x80/FFA500/000000?text=Avatar Orta", tier: "medium" }; else rw = { name: "Orta Seviye Banner", type:"banner", image: "https://placehold.co/80x80/FFC0CB/000000?text=Banner Orta", tier: "medium" }; } else if (r <= 99) { const tR = getRandomInt(1,3); if (tR === 1) rw = { ...globalItemPools.chests.high, tier: "high" }; else if (tR === 2) rw = { ...globalItemPools.high[getRandomInt(0,1)], tier: "high" }; else rw = { ...globalItemPools.high[0], tier: "high" }; } else { const tR = getRandomInt(1,4); if (tR === 1) rw = { type: "xp", amount: getRandomInt(10000,20000), name: `${getRandomInt(10000,20000)} XP`, image: globalIconPlaceholders.xp}; else if (tR === 2) rw = { type: "coin", amount: getRandomInt(10000,20000), name: `${getRandomInt(10000,20000)} Coin`, image: globalIconPlaceholders.coin}; else if (tR === 3) rw = { ...globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length -1)], tier: "rare" }; else rw = { ...globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length -1)], tier: "rare" }; } return rw; };
+                this.updateDisplay = () => { if (passwordInfoText) passwordInfoText.textContent = `Şifre ${this.passwordLength} haneli.`; if (hintDisplay) { hintDisplay.innerHTML = ''; const ul = document.createElement('ul'); this.givenClues.forEach(cT => { const li = document.createElement('li'); li.textContent = cT; ul.appendChild(li); }); hintDisplay.appendChild(ul); if (this.isDevMode) { const dHP = document.createElement('p'); dHP.textContent = `(DEV: ${this.targetPassword})`; dHP.className = 'text-xs text-yellow-400 mt-2'; hintDisplay.appendChild(dHP); } } if (passwordAttemptsLeftText) passwordAttemptsLeftText.textContent = `Kalan Deneme: ${this.maxAttempts - this.currentAttempts}`; };
+                this.displayMessage = (msg, cC = "text-gray-300") => { if (passwordGuessResult) { passwordGuessResult.textContent = msg; passwordGuessResult.className = `mt-3 font-semibold ${cC}`; } };
+                this.updatePlaysRemainingDisplay = () => { if(passwordGamePlaysRemainingText) passwordGamePlaysRemainingText.textContent = `Günlük Kalan Oyun: ${this.isDevMode ? 'Sınırsız' : this.playsRemaining}`; };
+                this.updateUserMessageAfterPopup = () => { if (!this.gameActive && (this.playsRemaining > 0 || this.isDevMode)) { this.displayMessage("Yeni bir oyun için hazır.", "text-blue-400"); if(submitGuessButton) { submitGuessButton.textContent = "Yeni Oyun Başlat"; submitGuessButton.disabled = false;} } else if (!this.gameActive) { this.displayMessage("Bugünlük hakkın bitti veya oyun sonlandı.", "text-red-400"); if(submitGuessButton) submitGuessButton.disabled = true;} };
+                this.toggleDevMode = () => { this.isDevMode = !this.isDevMode; if (this.devModeToggle) { this.devModeToggle.textContent = `DEV Modu: ${this.isDevMode ? 'AÇIK' : 'KAPALI'}`; this.devModeToggle.classList.toggle('active', this.isDevMode); } this.updatePlaysRemainingDisplay(); if (this.gameActive) { this.updateDisplay(); } else if (!this.gameActive && (this.playsRemaining > 0 || this.isDevMode)) { this.startNewGame(); } };
+                this.start = () => { this.init(); }; this.stop = () => { /* Gerekirse temizleme işlemleri */ };
+            }
+
+            // --- FLAPPY BIRD OYUNU ---
+            const flappyBirdCanvas = document.getElementById('flappyBirdCanvas');
+            const flappyBirdCtx = flappyBirdCanvas ? flappyBirdCanvas.getContext('2d') : null;
+            const flappyBirdDevModeToggle = document.getElementById('flappyBirdDevModeToggle');
+            const flappyBirdStartButton = document.getElementById('flappyBirdStartButton');
+            const flappyBirdPlayerCoinText = document.getElementById('flappyBirdPlayerCoinText');
+            const flappyBirdScoreText = document.getElementById('flappyBirdScoreText');
+            let flappyBirdGame = null;
+            function FlappyBirdGame() {
+                this.canvas = flappyBirdCanvas; this.ctx = flappyBirdCtx; this.devModeToggle = flappyBirdDevModeToggle; this.startButton = flappyBirdStartButton; this.playerCoinDisplay = flappyBirdPlayerCoinText; this.scoreDisplay = flappyBirdScoreText;
+                this.isDevMode = false; this.playerCoins = 100000; this.entryFee = 1000;
+                this.bird = { x: 50, y: 0, width: 34, height: 24, velocity: 0, flapStrength: -4.5, image: new Image() }; 
+                this.bird.image.src = 'https://placehold.co/34x24/FFFF00/000000?text=Kuş'; 
+                this.gravity = 0.2; this.pipes = []; this.pipeWidth = 50; this.pipeGap = 150; this.pipeSpawnInterval = 100; this.pipeSpawnTimer = 0; this.score = 0; this.earnedRewards = []; this.gameState = "start"; this.animationFrameId = null;
+                if (!this.canvas || !this.ctx) { console.error("Flappy Bird canvas context not found!"); return; }
+                this.init = () => { this.canvas.width = 360; this.canvas.height = 480; this.bird.y = this.canvas.height / 2; this.resetGame(); if (this.devModeToggle) this.devModeToggle.addEventListener('click', this.toggleDevMode); if (this.startButton) this.startButton.addEventListener('click', this.tryStartGame); this.canvas.addEventListener('click', this.handleInput); document.removeEventListener('keydown', this.handleKeyInput); document.addEventListener('keydown', this.handleKeyInput); this.updatePlayerCoinDisplay(); this.updateScoreDisplay(); this.mainDrawLoop(); };
+                this.resetGame = () => { this.bird.y = this.canvas.height / 2; this.bird.velocity = 0; this.pipes = []; this.score = 0; this.earnedRewards = []; this.pipeSpawnTimer = this.pipeSpawnInterval; this.gameState = "start"; if(this.startButton) this.startButton.disabled = false; this.updateScoreDisplay(); };
+                this.tryStartGame = () => { if (this.gameState !== "start") return; if (!this.isDevMode && this.playerCoins < this.entryFee) { showGenericRewardPopup("Yetersiz Bakiye", `Oyuna girmek için ${this.entryFee} coin gerekli.`, globalIconPlaceholders.coin); return; } if (!this.isDevMode) { this.playerCoins -= this.entryFee; this.updatePlayerCoinDisplay(); } this.gameState = "playing"; if(this.startButton) this.startButton.disabled = true; this.flap(); };
+                this.flap = () => { if (this.gameState === "playing") { this.bird.velocity = this.bird.flapStrength; } else if (this.gameState === "start") { this.tryStartGame(); } else if (this.gameState === "gameover") { this.resetGame(); } };
+                this.handleInput = () => { this.flap(); }; this.handleKeyInput = (e) => { if (e.code === "Space") { e.preventDefault(); this.flap(); }};
+                this.update = () => { if (this.gameState !== "playing") return; this.bird.velocity += this.gravity; this.bird.y += this.bird.velocity; if (this.bird.y + this.bird.height > this.canvas.height || this.bird.y < 0) { this.gameOver(); return; } this.pipeSpawnTimer++; if (this.pipeSpawnTimer >= this.pipeSpawnInterval) { this.pipeSpawnTimer = 0; const tPH = Math.random() * (this.canvas.height - this.pipeGap - 100) + 50; this.pipes.push({ x: this.canvas.width, y: 0, width: this.pipeWidth, height: tPH, passed: false }); this.pipes.push({ x: this.canvas.width, y: tPH + this.pipeGap, width: this.pipeWidth, height: this.canvas.height - (tPH + this.pipeGap) }); } for (let i = this.pipes.length - 1; i >= 0; i--) { const p = this.pipes[i]; p.x -= 1.5; if (this.bird.x < p.x + p.width && this.bird.x + this.bird.width > p.x && this.bird.y < p.y + p.height && this.bird.y + this.bird.height > p.y) { this.gameOver(); return; } if (p.x + p.width < this.bird.x && !p.passed && i % 2 === 0) { p.passed = true; this.score++; this.updateScoreDisplay(); if (this.score > 0 && this.score % 10 === 0) { const milestone = this.score / 10; if (!this.earnedRewards.find(r => r.milestone === milestone)) { const reward = this.determineFlappyReward(milestone); this.earnedRewards.push({ ...reward, milestone: milestone }); if(reward.type === 'coin') this.playerCoins += reward.amount; this.updatePlayerCoinDisplay(); } } } if (p.x + p.width < 0) { this.pipes.splice(i, 1); } } };
+                this.draw = () => { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.ctx.fillStyle = "#70c5ce"; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height); this.ctx.fillStyle = "#ded895"; this.ctx.fillRect(0, this.canvas.height - 20, this.canvas.width, 20); this.ctx.fillStyle = "#73BF2E"; this.pipes.forEach(p => { this.ctx.fillRect(p.x, p.y, p.width, p.height); }); if (this.bird.image.complete && this.bird.image.naturalHeight !== 0) { this.ctx.drawImage(this.bird.image, this.bird.x, this.bird.y, this.bird.width, this.bird.height); } else { this.ctx.fillStyle = "yellow"; this.ctx.fillRect(this.bird.x, this.bird.y, this.bird.width, this.bird.height); } this.ctx.fillStyle = "white"; this.ctx.strokeStyle = "black"; this.ctx.lineWidth = 2; this.ctx.textAlign = "center"; if (this.gameState === "start") { this.ctx.font = "24px Inter"; this.ctx.fillText("Başlamak İçin Tıkla/Space", this.canvas.width / 2, this.canvas.height / 2 - 50); this.ctx.strokeText("Başlamak İçin Tıkla/Space", this.canvas.width / 2, this.canvas.height / 2 - 50); } else if (this.gameState === "gameover") { this.ctx.font = "30px Inter"; this.ctx.fillText("Oyun Bitti!", this.canvas.width / 2, this.canvas.height / 2 - 20); this.ctx.strokeText("Oyun Bitti!", this.canvas.width / 2, this.canvas.height / 2 - 20); this.ctx.font = "20px Inter"; this.ctx.fillText(`Skor: ${this.score}`, this.canvas.width / 2, this.canvas.height / 2 + 20); this.ctx.strokeText(`Skor: ${this.score}`, this.canvas.width / 2, this.canvas.height / 2 + 20); this.ctx.font = "16px Inter"; this.ctx.fillText("Tekrar Oynamak İçin Tıkla/Space", this.canvas.width / 2, this.canvas.height / 2 + 60); this.ctx.strokeText("Tekrar Oynamak İçin Tıkla/Space", this.canvas.width / 2, this.canvas.height / 2 + 60); } };
+                this.mainDrawLoop = () => { if (!this.ctx) return; this.update(); this.draw(); this.animationFrameId = requestAnimationFrame(this.mainDrawLoop); };
+                this.gameOver = () => { if (this.gameState === "gameover") return; this.gameState = "gameover"; if(this.startButton) this.startButton.disabled = false; if (this.earnedRewards.length > 0) { const lastEarnedReward = this.earnedRewards[this.earnedRewards.length - 1]; if (lastEarnedReward) { setTimeout(() => { showGenericRewardPopup( `Oyun Bitti! Skor: ${this.score}`, `Kazanılan Ödül: ${lastEarnedReward.name || (lastEarnedReward.amount + ' ' + (lastEarnedReward.type || ''))}`, lastEarnedReward.image ); }, 500); } } else if (this.score > 0) { setTimeout(() => { showGenericRewardPopup( `Oyun Bitti! Skor: ${this.score}`, "Bu seferlik bir şey kazanamadın, tekrar dene!", 'https://placehold.co/80x80/cccccc/000000?text=:( ' ); }, 500); } };
+                this.determineFlappyReward = (m) => { let rw = {}; if (m === 1) { rw = { type: Math.random() < 0.5 ? "xp" : "coin", amount: 100, name: `100 ${Math.random() < 0.5 ? "XP" : "Coin"}`, image: Math.random() < 0.5 ? globalIconPlaceholders.xp : globalIconPlaceholders.coin }; } else if (m === 2) { rw = { type: "generic_item", ...globalItemPools.low[getRandomInt(0, globalItemPools.low.length - 1)], name: globalItemPools.low[getRandomInt(0, globalItemPools.low.length - 1)].name }; } else if (m === 3) { rw = { type: "generic_item", ...globalItemPools.medium[getRandomInt(0, globalItemPools.medium.length - 1)], name: globalItemPools.medium[getRandomInt(0, globalItemPools.medium.length - 1)].name }; } else if (m === 4) { rw = { type: "generic_item", ...globalItemPools.high[getRandomInt(0, globalItemPools.high.length - 1)], name: globalItemPools.high[getRandomInt(0, globalItemPools.high.length - 1)].name }; } else if (m >= 5) { rw = { type: "generic_item", ...globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length - 1)], name: globalItemPools.rare[getRandomInt(0, globalItemPools.rare.length - 1)].name }; } else { rw = { type: "coin", amount: 50, name: "50 Coin", image: globalIconPlaceholders.coin }; } return rw; };
+                this.updatePlayerCoinDisplay = () => { if (this.playerCoinDisplay) this.playerCoinDisplay.textContent = `Coin: ${this.playerCoins}`; };
+                this.updateScoreDisplay = () => { if (this.scoreDisplay) this.scoreDisplay.textContent = `Skor: ${this.score}`; };
+                this.updateUserMessageAfterPopup = () => { /* Bu oyun için özel bir mesaj yok */ };
+                this.toggleDevMode = () => { this.isDevMode = !this.isDevMode; if (this.devModeToggle) { this.devModeToggle.textContent = `DEV Modu: ${this.isDevMode ? 'AÇIK' : 'KAPALI'}`; this.devModeToggle.classList.toggle('active', this.isDevMode); } };
+                this.start = () => { if (!this.animationFrameId && this.ctx) this.init(); };
+                this.stop = () => { if (this.animationFrameId) { cancelAnimationFrame(this.animationFrameId); this.animationFrameId = null; } document.removeEventListener('keydown', this.handleKeyInput); };
+            }
+            
+            // --- OYUN KARTI VE MODAL YÖNETİMİ (Oyun sınıfı tanımlamalarından SONRA olmalı) ---
+            const gameCards = document.querySelectorAll('.game-card');
+            const modals = document.querySelectorAll('.modal');
+            const closeModalButtons = document.querySelectorAll('.close-modal-button');
+
+            gameCards.forEach(card => {
+                const playButton = card.querySelector('.play-button');
+                const modalId = card.dataset.modalId;
+                if (playButton && modalId && !card.classList.contains('soon')) {
+                    playButton.addEventListener('click', () => {
+                        const modalToOpen = document.getElementById(modalId);
+                        if (modalToOpen) {
+                            modalToOpen.style.display = 'block';
+                            switch (modalId) {
+                                case 'dailyRewardModal':
+                                    if (!dailyRewardGame && dailyRewardCtx) dailyRewardGame = new DailyRewardGame();
+                                    if (dailyRewardGame) dailyRewardGame.start();
+                                    break;
+                                case 'rpsModal':
+                                    if (!rpsGame && rpsCtx) rpsGame = new RockPaperScissorsGame();
+                                    if (rpsGame) rpsGame.start();
+                                    break;
+                                case 'miningModal':
+                                    if (!miningGame && miningCtx) miningGame = new MiningGame();
+                                    if (miningGame) miningGame.start();
+                                    break;
+                                case 'passwordGuessModal':
+                                    if (!passwordGuessGame) passwordGuessGame = new PasswordGuessGame(); 
+                                    if (passwordGuessGame) passwordGuessGame.start();
+                                    break;
+                                case 'flappyBirdModal':
+                                    if (!flappyBirdGame && flappyBirdCtx) flappyBirdGame = new FlappyBirdGame();
+                                    if (flappyBirdGame) flappyBirdGame.start();
+                                    break;
+                            }
+                        }
+                    });
+                }
+            });
+
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modalIdToClose = button.dataset.modalId; 
+                    const modalToClose = document.getElementById(modalIdToClose);
+                    if (modalToClose) {
+                        modalToClose.style.display = 'none';
+                         switch (modalIdToClose) {
+                            case 'dailyRewardModal': if (dailyRewardGame) dailyRewardGame.stop(); break;
+                            case 'rpsModal': if (rpsGame) rpsGame.stop(); break;
+                            case 'miningModal': if (miningGame) miningGame.stop(); break;
+                            case 'passwordGuessModal': if (passwordGuessGame) passwordGuessGame.stop(); break;
+                            case 'flappyBirdModal': if (flappyBirdGame) flappyBirdGame.stop(); break;
+                        }
+                    }
+                });
+            });
+
+            window.addEventListener('click', (event) => {
+                modals.forEach(modal => {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                        const modalId = modal.id;
+                        switch (modalId) {
+                            case 'dailyRewardModal': if (dailyRewardGame) dailyRewardGame.stop(); break;
+                            case 'rpsModal': if (rpsGame) rpsGame.stop(); break;
+                            case 'miningModal': if (miningGame) miningGame.stop(); break;
+                            case 'passwordGuessModal': if (passwordGuessGame) passwordGuessGame.stop(); break;
+                            case 'flappyBirdModal': if (flappyBirdGame) flappyBirdGame.stop(); break;
+                        }
+                    }
+                });
+            });
+        }); // DOMContentLoaded sonu
+    </script>
