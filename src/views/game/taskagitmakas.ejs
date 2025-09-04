@@ -12,7 +12,9 @@
             <span class="close-modal-button" data-modal-id="rpsModal">&times;</span>
             <h2 class="text-2xl font-semibold text-gray-300 mb-4">Taş Kağıt Makas</h2>
             <div id="rpsControlsContainer">
+               <% if (user && user.id === '352036341153923072') { %>
                 <button id="rpsDevModeToggle">DEV Modu: KAPALI</button>
+                <% } %>
                 <span id="rpsPlaysRemainingText" class="text-sm text-gray-400 ml-auto"></span>
             </div>
             <div id="rpsGameModeSelection" class="mb-4">
