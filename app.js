@@ -41,6 +41,11 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const { Davet } = require('./src/models/davet');
 
+// Oyun route'ları
+const inventoryRoutes = require('./src/routes/inventory');
+const gameApiRoutes = require('./src/routes/gameApi');
+const GameItems = require('./src/models/gameItems');
+
 moment.locale("tr");
 const cooldown = new Map();
 const client = new Client({
@@ -75,6 +80,14 @@ app.use(express.static(__dirname + '/src/public'));
 app.use(session({ secret: 'secret-session-thing', resave: false, saveUninitialized: false, }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Route'ları ekle
+app.use('/inventory', inventoryRoutes);
+app.use('/api/games', gameApiRoutes);
+
+// App locals'a client ve conf'u ekle
+app.locals.client = client;
+app.locals.conf = conf;
 
 // Passport kullanıcı serializasyonu ve deserializasyonu
 passport.serializeUser((user, done) => done(null, user));
@@ -121,6 +134,21 @@ async function setBotPresence() {
   }
 }
 
+// Bot hazır olduğunda oyun eşyalarını başlat
+client.once('ready', async () => {
+  console.log(`${client.user.tag} olarak giriş yapıldı!`);
+  
+  // Oyun eşyalarını başlat
+  try {
+    await GameItems.initializeItems();
+    console.log('Oyun eşyaları başlatıldı!');
+  } catch (error) {
+    console.error('Oyun eşyaları başlatma hatası:', error);
+  }
+  
+  setBotPresence();
+});
+
 app.get('/login', passport.authenticate('discord', { scope: scopes, }));
 app.get('/callback', passport.authenticate('discord', { failureRedirect: '/error', }), (req, res) => res.redirect('/'));
 app.get('/logout', (req, res) => {
@@ -159,6 +187,7 @@ bot: client,
 path: req.path, 
 isStaff,
 reqMember: req.user ? client.guilds.cache.get(conf.guildID).members.cache.get(req.user.id) : null
+});
 });
 
 client.login(settings.token).catch((err) => console.log(err));
