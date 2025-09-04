@@ -1,0 +1,24 @@
+        <div class="game-card" data-modal-id="rpsModal">
+            <div class="icon-container">✂️</div>
+            <div>
+                <h3>Taş Kağıt Makas</h3>
+                <p class="description">Bot'a karşı oyna!</p>
+            </div>
+            <button class="play-button">Oyna</button>
+        </div>
+
+    <div id="rpsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-button" data-modal-id="rpsModal">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Taş Kağıt Makas</h2>
+            <div id="rpsControlsContainer">
+                <button id="rpsDevModeToggle">DEV Modu: KAPALI</button>
+                <span id="rpsPlaysRemainingText" class="text-sm text-gray-400 ml-auto"></span>
+            </div>
+            <div id="rpsGameModeSelection" class="mb-4">
+                <button id="playRpsWithBotButton">Bot İle Oyna (1000 Coin)</button>
+                <button id="playRpsOnlineButton" disabled>Online Oyna (Yakında)</button>
+            </div>
+            <canvas id="rpsCanvas" class="game-canvas"></canvas>
+        </div>
+    </div>
