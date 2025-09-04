@@ -1,0 +1,21 @@
+    <div id="gameSelectionScreen">
+        <div class="game-card" data-modal-id="dailyRewardModal">
+            <div class="icon-container">🎁</div>
+            <div>
+                <h3>Günlük Ödül</h3>
+                <p class="description">Her gün bir sandık aç!</p>
+            </div>
+            <button class="play-button">Oyna</button>
+        </div>
+
+    
+    <div id="dailyRewardModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-button" data-modal-id="dailyRewardModal">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Günlük Ödül Sandığı</h2>
+            <div id="controlsContainer">
+                <button id="devModeToggle">DEV Modu: KAPALI</button>
+            </div>
+            <canvas id="dailyRewardCanvas" class="game-canvas"></canvas>
+        </div>
+    </div>
