@@ -1,0 +1,22 @@
+        <div class="game-card" data-modal-id="flappyBirdModal">
+            <div class="icon-container">🐦</div>
+            <div>
+                <h3>Uçan Kuş</h3>
+                <p class="description">Borulardan kaç!</p>
+            </div>
+            <button class="play-button">Oyna</button>
+        </div>
+
+        <div id="flappyBirdModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal-button" data-modal-id="flappyBirdModal">&times;</span>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Uçan Kuş Macerası</h2>
+            <div id="flappyBirdControlsContainer">
+                <button id="flappyBirdDevModeToggle">DEV Modu: KAPALI</button>
+                <button id="flappyBirdStartButton">Başla (1000 Coin)</button>
+                <span id="flappyBirdPlayerCoinText" class="player-coins">Coin: 100000</span>
+                <span id="flappyBirdScoreText">Skor: 0</span>
+            </div>
+            <canvas id="flappyBirdCanvas" class="game-canvas"></canvas>
+        </div>
+    </div>
