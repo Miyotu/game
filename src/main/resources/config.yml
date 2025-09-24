@@ -1,0 +1,262 @@
+# MiyotuGame Plugin Configuration
+# Minecraft 1.20.1 Bukkit/Spigot Plugin
+
+# General Settings
+general:
+  # Language setting (tr, en)
+  language: "tr"
+  # Plugin prefix for messages
+  prefix: "&6[&bMiyotuGame&6] "
+  # Debug mode
+  debug: false
+  # Auto-save interval in minutes
+  auto-save-interval: 5
+
+# Database Configuration
+database:
+  # Database type: mysql, sqlite
+  type: "mysql"
+  # MySQL settings
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "miyotugame"
+    username: "root"
+    password: "password"
+    # Connection pool settings
+    pool:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+# Economy System
+economy:
+  # Enable economy system
+  enabled: true
+  # Starting balance for new players
+  starting-balance: 1000
+  # Currency symbol
+  currency-symbol: "₺"
+  # Currency name (singular/plural)
+  currency-name:
+    singular: "coin"
+    plural: "coins"
+  # Maximum balance
+  max-balance: 999999999
+  # Daily reward settings
+  daily-reward:
+    enabled: true
+    base-amount: 500
+    # Bonus for consecutive days
+    streak-bonus:
+      enabled: true
+      max-streak: 30
+      bonus-per-day: 50
+
+# Shop System
+shop:
+  # Enable shop system
+  enabled: true
+  # Shop categories
+  categories:
+    blocks:
+      name: "Blocks"
+      icon: "STONE"
+      items:
+        - "STONE:10"
+        - "DIRT:5"
+        - "COBBLESTONE:8"
+    tools:
+      name: "Tools"
+      icon: "DIAMOND_PICKAXE"
+      items:
+        - "WOODEN_PICKAXE:50"
+        - "STONE_PICKAXE:100"
+        - "IRON_PICKAXE:500"
+    food:
+      name: "Food"
+      icon: "BREAD"
+      items:
+        - "BREAD:20"
+        - "APPLE:15"
+        - "COOKED_BEEF:50"
+
+# Player Management
+player-management:
+  # Teleport settings
+  teleport:
+    # Teleport delay in seconds
+    delay: 3
+    # Cancel on move/damage
+    cancel-on-move: true
+    cancel-on-damage: true
+  # Heal command settings
+  heal:
+    # Also restore food and saturation
+    restore-food: true
+  # God mode settings
+  god-mode:
+    # Prevent fall damage
+    prevent-fall-damage: true
+    # Prevent drowning
+    prevent-drowning: true
+
+# Rank System
+ranks:
+  enabled: true
+  default-rank: "player"
+  ranks:
+    player:
+      name: "&7Player"
+      prefix: "&7[Player] "
+      permissions:
+        - "miyotugame.player.*"
+    vip:
+      name: "&6VIP"
+      prefix: "&6[VIP] "
+      permissions:
+        - "miyotugame.player.*"
+        - "miyotugame.heal"
+    moderator:
+      name: "&9Moderator"
+      prefix: "&9[Mod] "
+      permissions:
+        - "miyotugame.player.*"
+        - "miyotugame.kick"
+        - "miyotugame.region"
+    admin:
+      name: "&cAdmin"
+      prefix: "&c[Admin] "
+      permissions:
+        - "miyotugame.*"
+
+# Protection System
+protection:
+  # Enable region protection
+  enabled: true
+  # WorldGuard integration
+  worldguard-integration: true
+  # Default flags for new regions
+  default-flags:
+    pvp: false
+    build: false
+    interact: false
+    use: false
+  # Grief protection
+  grief-protection:
+    enabled: true
+    # Block types to protect
+    protected-blocks:
+      - "CHEST"
+      - "FURNACE"
+      - "DIAMOND_ORE"
+      - "GOLD_ORE"
+
+# Mini Games
+mini-games:
+  # Parkour settings
+  parkour:
+    enabled: true
+    # Reset on fall
+    reset-on-fall: true
+    # Teleport to start on fail
+    teleport-on-fail: true
+    # Rewards
+    rewards:
+      completion: 1000
+      time-bonus: true
+  
+  # Quiz game settings
+  quiz:
+    enabled: true
+    # Question time limit in seconds
+    time-limit: 30
+    # Rewards per correct answer
+    reward-per-question: 100
+    # Questions file
+    questions-file: "quiz-questions.yml"
+  
+  # Treasure hunt settings
+  treasure-hunt:
+    enabled: true
+    # Maximum active hunts
+    max-active-hunts: 5
+    # Hunt duration in minutes
+    hunt-duration: 30
+    # Rewards
+    rewards:
+      small: 500
+      medium: 1000
+      large: 2000
+
+# Social Features
+social:
+  # Chat formatting
+  chat:
+    enabled: true
+    format: "{prefix}{player}: {message}"
+    # Chat colors based on rank
+    rank-colors: true
+  
+  # Private messaging
+  private-messages:
+    enabled: true
+    # Sound notification
+    sound-notification: true
+    # Message format
+    format: "&d[{sender} -> {receiver}] &f{message}"
+  
+  # Friend system
+  friends:
+    enabled: true
+    # Maximum friends per player
+    max-friends: 50
+    # Online notification
+    online-notifications: true
+
+# Admin Tools
+admin-tools:
+  # Ban system
+  ban-system:
+    enabled: true
+    # Broadcast bans
+    broadcast-bans: true
+    # Ban reasons
+    default-reasons:
+      - "Griefing"
+      - "Inappropriate behavior"
+      - "Cheating"
+      - "Spam"
+  
+  # Logging system
+  logging:
+    enabled: true
+    # Log to file
+    log-to-file: true
+    # Log to database
+    log-to-database: true
+    # Events to log
+    events:
+      - "player-join"
+      - "player-leave"
+      - "command-usage"
+      - "admin-actions"
+      - "economy-transactions"
+
+# Performance Settings
+performance:
+  # Async database operations
+  async-database: true
+  # Cache settings
+  cache:
+    # Player data cache time in minutes
+    player-data: 30
+    # Region data cache time in minutes
+    region-data: 60
+  # Metrics and stats
+  metrics:
+    enabled: true
+    # bStats integration
+    bstats: true

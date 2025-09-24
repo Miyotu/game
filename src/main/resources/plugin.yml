@@ -1,0 +1,163 @@
+name: MiyotuGame
+version: '1.0.0'
+description: Comprehensive Minecraft 1.20.1 Bukkit/Spigot Plugin
+main: com.miyotu.game.MiyotuGamePlugin
+api-version: 1.20
+author: Miyotu
+website: https://github.com/Miyotu/game
+
+depend: []
+softdepend: [Vault, PlaceholderAPI, WorldGuard]
+
+commands:
+  # Player Management Commands
+  heal:
+    description: Heal yourself or another player
+    usage: /<command> [player]
+    permission: miyotugame.heal
+    permission-message: You don't have permission to use this command!
+    
+  fly:
+    description: Toggle flight mode
+    usage: /<command> [player]
+    permission: miyotugame.fly
+    permission-message: You don't have permission to use this command!
+    
+  god:
+    description: Toggle god mode (invincibility)
+    usage: /<command> [player]
+    permission: miyotugame.god
+    permission-message: You don't have permission to use this command!
+    
+  tp:
+    description: Teleport to a player or coordinates
+    usage: /<command> <player> [target] | /<command> <x> <y> <z>
+    permission: miyotugame.tp
+    permission-message: You don't have permission to use this command!
+    
+  # Economy Commands
+  balance:
+    description: Check your or another player's balance
+    usage: /<command> [player]
+    aliases: [bal, money]
+    permission: miyotugame.balance
+    
+  pay:
+    description: Pay money to another player
+    usage: /<command> <player> <amount>
+    permission: miyotugame.pay
+    
+  shop:
+    description: Open the server shop
+    usage: /<command>
+    permission: miyotugame.shop
+    
+  daily:
+    description: Claim your daily reward
+    usage: /<command>
+    permission: miyotugame.daily
+    
+  # Social Commands
+  msg:
+    description: Send a private message to a player
+    usage: /<command> <player> <message>
+    aliases: [pm, tell, w]
+    permission: miyotugame.msg
+    
+  reply:
+    description: Reply to the last private message
+    usage: /<command> <message>
+    aliases: [r]
+    permission: miyotugame.msg
+    
+  friend:
+    description: Manage your friends list
+    usage: /<command> <add|remove|list> [player]
+    permission: miyotugame.friend
+    
+  # Mini Games
+  parkour:
+    description: Manage parkour courses
+    usage: /<command> <create|delete|list|join|leave> [args]
+    permission: miyotugame.parkour
+    
+  quiz:
+    description: Start or manage quiz games
+    usage: /<command> <start|stop|answer> [args]
+    permission: miyotugame.quiz
+    
+  treasure:
+    description: Start treasure hunt
+    usage: /<command> <start|hint|stop>
+    permission: miyotugame.treasure
+    
+  # Admin Commands
+  gameadmin:
+    description: Main admin command
+    usage: /<command> <subcommand>
+    aliases: [gadmin]
+    permission: miyotugame.admin
+    
+  ban:
+    description: Ban a player
+    usage: /<command> <player> [reason]
+    permission: miyotugame.ban
+    
+  kick:
+    description: Kick a player
+    usage: /<command> <player> [reason]
+    permission: miyotugame.kick
+    
+  # Region Protection
+  region:
+    description: Manage protected regions
+    usage: /<command> <create|delete|info|list> [args]
+    permission: miyotugame.region
+    
+  # Stats and Ranks
+  stats:
+    description: View player statistics
+    usage: /<command> [player]
+    permission: miyotugame.stats
+    
+  rank:
+    description: Manage player ranks
+    usage: /<command> <set|get|list> [player] [rank]
+    permission: miyotugame.rank
+
+permissions:
+  miyotugame.*:
+    description: All MiyotuGame permissions
+    children:
+      miyotugame.player.*: true
+      miyotugame.admin.*: true
+      
+  miyotugame.player.*:
+    description: All player permissions
+    default: true
+    children:
+      miyotugame.balance: true
+      miyotugame.pay: true
+      miyotugame.shop: true
+      miyotugame.daily: true
+      miyotugame.msg: true
+      miyotugame.friend: true
+      miyotugame.parkour: true
+      miyotugame.quiz: true
+      miyotugame.treasure: true
+      miyotugame.stats: true
+      
+  miyotugame.admin.*:
+    description: All admin permissions
+    default: op
+    children:
+      miyotugame.heal: true
+      miyotugame.fly: true
+      miyotugame.god: true
+      miyotugame.tp: true
+      miyotugame.admin: true
+      miyotugame.ban: true
+      miyotugame.kick: true
+      miyotugame.region: true
+      miyotugame.rank: true
+      miyotugame.reload: true

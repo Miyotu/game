@@ -1,0 +1,257 @@
+# Quiz Questions Configuration
+# This file contains questions for the quiz mini-game
+
+# Question categories
+categories:
+  minecraft:
+    name: "Minecraft"
+    description: "Minecraft ile ilgili sorular"
+    color: "&2"
+  
+  geography:
+    name: "Coğrafya"
+    description: "Dünya coğrafyası soruları"
+    color: "&9"
+  
+  history:
+    name: "Tarih"
+    description: "Tarih soruları"
+    color: "&6"
+  
+  science:
+    name: "Bilim"
+    description: "Bilim ve teknoloji soruları"
+    color: "&d"
+
+# Quiz questions
+questions:
+  # Minecraft Questions - Easy
+  - question: "Minecraft'da hangi blok en sert bloktur?"
+    answers: ["Bedrock", "Obsidian", "Diamond Block", "Netherite Block"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Creeper'lar patlayınca hangi ses çıkarır?"
+    answers: ["Tsss", "Boom", "Bang", "Pop"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Nether'a gitmek için hangi portal kullanılır?"
+    answers: ["Nether Portal", "End Portal", "Aether Portal", "Twilight Portal"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Minecraft'da hangi hayvan süt verir?"
+    answers: ["İnek", "Koyun", "Domuz", "Tavuk"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Elmas hangi seviyede bulunur?"
+    answers: ["Y: 1-16", "Y: 20-30", "Y: 50-60", "Y: 80-90"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "easy"
+    points: 100
+  
+  # Minecraft Questions - Medium
+  - question: "Enchanting table yapmak için kaç tane obsidian gerekir?"
+    answers: ["4", "6", "8", "2"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "medium"
+    points: 200
+  
+  - question: "Brewing stand yapmak için hangi malzeme gerekir?"
+    answers: ["Blaze Rod", "Ghast Tear", "Magma Cream", "Nether Star"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "medium"
+    points: 200
+  
+  - question: "Hangi enchantment balık tutmayı hızlandırır?"
+    answers: ["Lure", "Luck of the Sea", "Unbreaking", "Mending"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "medium"
+    points: 200
+  
+  # Geography Questions - Easy
+  - question: "Türkiye'nin başkenti neresidir?"
+    answers: ["Ankara", "İstanbul", "İzmir", "Bursa"]
+    correct: 0
+    category: "geography"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Dünyanın en büyük okyanusu hangisidir?"
+    answers: ["Pasifik Okyanusu", "Atlantik Okyanusu", "Hint Okyanusu", "Arktik Okyanusu"]
+    correct: 0
+    category: "geography"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Hangi kıta en büyüktür?"
+    answers: ["Asya", "Afrika", "Kuzey Amerika", "Avrupa"]
+    correct: 0
+    category: "geography"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Nil Nehri hangi kıtadadır?"
+    answers: ["Afrika", "Asya", "Avrupa", "Güney Amerika"]
+    correct: 0
+    category: "geography"
+    difficulty: "easy"
+    points: 100
+  
+  # Geography Questions - Medium
+  - question: "Dünyada en uzun nehir hangisidir?"
+    answers: ["Nil Nehri", "Amazon Nehri", "Yangtze Nehri", "Mississippi Nehri"]
+    correct: 0
+    category: "geography"
+    difficulty: "medium"
+    points: 200
+  
+  - question: "Everest Dağı hangi iki ülke arasındadır?"
+    answers: ["Nepal-Çin", "Hindistan-Çin", "Nepal-Hindistan", "Bhutan-Çin"]
+    correct: 0
+    category: "geography"
+    difficulty: "medium"
+    points: 200
+  
+  # History Questions - Easy
+  - question: "Osmanlı İmparatorluğu hangi yıl kuruldu?"
+    answers: ["1299", "1453", "1389", "1326"]
+    correct: 0
+    category: "history"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "İstanbul'un fethi hangi yıl gerçekleşti?"
+    answers: ["1453", "1299", "1389", "1571"]
+    correct: 0
+    category: "history"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Atatürk hangi yıl doğdu?"
+    answers: ["1881", "1923", "1919", "1938"]
+    correct: 0
+    category: "history"
+    difficulty: "easy"
+    points: 100
+  
+  # History Questions - Medium
+  - question: "Birinci Dünya Savaşı hangi yıllar arasında yaşandı?"
+    answers: ["1914-1918", "1939-1945", "1912-1913", "1919-1922"]
+    correct: 0
+    category: "history"
+    difficulty: "medium"
+    points: 200
+  
+  - question: "Türkiye Cumhuriyeti hangi tarihte ilan edildi?"
+    answers: ["29 Ekim 1923", "19 Mayıs 1919", "23 Nisan 1920", "30 Ağustos 1922"]
+    correct: 0
+    category: "history"
+    difficulty: "medium"
+    points: 200
+  
+  # Science Questions - Easy
+  - question: "Suyun kimyasal formülü nedir?"
+    answers: ["H2O", "CO2", "NaCl", "O2"]
+    correct: 0
+    category: "science"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "Güneş sistemimizde kaç gezegen vardır?"
+    answers: ["8", "9", "7", "10"]
+    correct: 0
+    category: "science"
+    difficulty: "easy"
+    points: 100
+  
+  - question: "İnsan vücudundaki en büyük organ hangisidir?"
+    answers: ["Deri", "Karaciğer", "Akciğer", "Beyin"]
+    correct: 0
+    category: "science"
+    difficulty: "easy"
+    points: 100
+  
+  # Science Questions - Medium
+  - question: "DNA'nın açılımı nedir?"
+    answers: ["Deoksiribonükleik Asit", "Diazin Nükleik Asit", "Di-amino Asit", "Deoksijen Asit"]
+    correct: 0
+    category: "science"
+    difficulty: "medium"
+    points: 200
+  
+  - question: "Işık hızı saniyede kaç kilometre?"
+    answers: ["300.000 km", "150.000 km", "500.000 km", "100.000 km"]
+    correct: 0
+    category: "science"
+    difficulty: "medium"
+    points: 200
+  
+  # Hard Questions for Bonus Points
+  - question: "Minecraft'da hangi potion effect jump boost verir?"
+    answers: ["Jump Boost", "Speed", "Strength", "Haste"]
+    correct: 0
+    category: "minecraft"
+    difficulty: "hard"
+    points: 500
+  
+  - question: "Dünyanın en derin okyanus çukuru hangisidir?"
+    answers: ["Mariana Çukuru", "Tonga Çukuru", "Puerto Rico Çukuru", "Java Çukuru"]
+    correct: 0
+    category: "geography"
+    difficulty: "hard"
+    points: 500
+  
+  - question: "Periyodik tabloda altının sembolü nedir?"
+    answers: ["Au", "Ag", "Al", "Ar"]
+    correct: 0
+    category: "science"
+    difficulty: "hard"
+    points: 500
+
+# Quiz settings
+settings:
+  # Time limit per question in seconds
+  time_limit: 30
+  
+  # Minimum players to start a quiz
+  min_players: 1
+  
+  # Maximum players in a quiz
+  max_players: 20
+  
+  # Number of questions per quiz session
+  questions_per_session: 10
+  
+  # Reward multipliers based on difficulty
+  difficulty_multipliers:
+    easy: 1.0
+    medium: 1.5
+    hard: 2.0
+  
+  # Streak bonuses (consecutive correct answers)
+  streak_bonuses:
+    3: 50   # 3 correct answers in a row: +50 points
+    5: 100  # 5 correct answers in a row: +100 points
+    10: 250 # 10 correct answers in a row: +250 points
+  
+  # Category bonuses
+  category_bonuses:
+    minecraft: 1.2  # 20% bonus for Minecraft questions
+    geography: 1.0  # No bonus
+    history: 1.1    # 10% bonus
+    science: 1.3    # 30% bonus

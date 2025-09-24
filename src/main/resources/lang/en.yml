@@ -1,0 +1,147 @@
+# English Language File for MiyotuGame Plugin
+
+# General Messages
+general:
+  prefix: "&6[&bMiyotuGame&6] "
+  no-permission: "&cYou don't have permission to use this command!"
+  player-not-found: "&cPlayer not found: {player}"
+  player-offline: "&cPlayer is offline: {player}"
+  invalid-amount: "&cInvalid amount: {amount}"
+  reload-success: "&aPlugin reloaded successfully!"
+  command-usage: "&cUsage: {usage}"
+
+# Player Management
+player:
+  heal:
+    self: "&aYou have been healed!"
+    other: "&aYou healed {player}!"
+    received: "&aYou were healed by {player}!"
+  fly:
+    enabled-self: "&aFlight mode enabled!"
+    disabled-self: "&cFlight mode disabled!"
+    enabled-other: "&aFlight mode enabled for {player}!"
+    disabled-other: "&cFlight mode disabled for {player}!"
+  god:
+    enabled-self: "&aGod mode enabled! You are now invincible."
+    disabled-self: "&cGod mode disabled."
+    enabled-other: "&aGod mode enabled for {player}!"
+    disabled-other: "&cGod mode disabled for {player}!"
+  teleport:
+    success: "&aTeleported to {target}!"
+    preparing: "&ePreparing teleportation... wait {seconds} seconds."
+    cancelled-move: "&cTeleportation cancelled because you moved!"
+    cancelled-damage: "&cTeleportation cancelled because you took damage!"
+
+# Economy System
+economy:
+  balance:
+    self: "&aYour balance: &e{balance} {currency}"
+    other: "&a{player}'s balance: &e{balance} {currency}"
+  pay:
+    success-sender: "&aYou sent {amount} {currency} to {player}!"
+    success-receiver: "&aYou received {amount} {currency} from {sender}!"
+    insufficient-funds: "&cInsufficient funds! Your balance: {balance} {currency}"
+    cannot-pay-self: "&cYou cannot pay yourself!"
+  daily:
+    claimed: "&aYou claimed your daily reward! +{amount} {currency}"
+    already-claimed: "&cYou already claimed your daily reward today! Time left: {time}"
+    streak-bonus: "&6Streak bonus: +{bonus} {currency} ({streak} days)"
+
+# Shop System
+shop:
+  title: "&6&lServer Shop"
+  category-title: "&6&l{category} Category"
+  item-lore:
+    - "&7Price: &e{price} {currency}"
+    - "&7Stock: &a{stock}"
+    - ""
+    - "&aClick to purchase!"
+  purchase-success: "&aPurchased {item} x{amount}! -{price} {currency}"
+  insufficient-funds: "&cInsufficient funds! Required: {price} {currency}"
+  out-of-stock: "&cThis item is currently out of stock!"
+
+# Social Features
+social:
+  msg:
+    format: "&d[{sender} -> {receiver}] &f{message}"
+    sent: "&aMessage sent: &f{message}"
+    no-reply-target: "&cNo one to reply to!"
+  friends:
+    added: "&a{player} added to your friends list!"
+    removed: "&c{player} removed from your friends list!"
+    already-friend: "&c{player} is already your friend!"
+    not-friend: "&c{player} is not your friend!"
+    online: "&aYour friend {player} came online!"
+    offline: "&cYour friend {player} went offline!"
+    list-header: "&6--- Friends List ---"
+    list-format: "&a{player} &7({status})"
+    max-friends: "&cYou reached the maximum number of friends! ({max})"
+
+# Mini Games
+games:
+  parkour:
+    created: "&aParkour '{name}' created!"
+    deleted: "&cParkour '{name}' deleted!"
+    joined: "&aParkour '{name}' started! Good luck!"
+    completed: "&6Congratulations! You completed the parkour! +{reward} {currency}"
+    failed: "&cParkour failed! Returning to start..."
+    checkpoint: "&eCheckpoint! Progress saved."
+  quiz:
+    started: "&6Quiz started! Here comes the first question..."
+    question: "&e{question}"
+    correct: "&aCongratulations! Correct answer! +{reward} {currency}"
+    incorrect: "&cWrong answer! Correct answer: {answer}"
+    time-up: "&cTime's up! Correct answer: {answer}"
+    ended: "&6Quiz ended! Total score: {score}"
+  treasure:
+    started: "&6Treasure hunt started! Getting your first clue..."
+    hint: "&eHint: {hint}"
+    found: "&aCongratulations! Treasure found! +{reward} {currency}"
+    failed: "&cTreasure hunt failed! Time's up."
+
+# Protection System
+protection:
+  region:
+    created: "&aRegion '{name}' created!"
+    deleted: "&cRegion '{name}' deleted!"
+    enter: "&aEntered region: {name}"
+    leave: "&cLeft region: {name}"
+    cannot-build: "&cYou cannot build in this region!"
+    cannot-interact: "&cYou cannot interact in this region!"
+    pvp-disabled: "&cPvP is disabled in this region!"
+
+# Admin Tools
+admin:
+  ban:
+    success: "&a{player} has been banned! Reason: {reason}"
+    already-banned: "&c{player} is already banned!"
+    broadcast: "&c{player} was banned from the server! Reason: {reason}"
+  kick:
+    success: "&a{player} has been kicked! Reason: {reason}"
+    broadcast: "&c{player} was kicked from the server! Reason: {reason}"
+  unban:
+    success: "&a{player} has been unbanned!"
+    not-banned: "&c{player} is not banned!"
+
+# Statistics
+stats:
+  title: "&6--- {player} Statistics ---"
+  playtime: "&7Playtime: &a{time}"
+  money: "&7Money: &e{money} {currency}"
+  rank: "&7Rank: {rank}"
+  friends: "&7Friends: &a{friends}"
+  last-seen: "&7Last Seen: &a{time}"
+
+# Ranks
+ranks:
+  set: "&a{player}'s rank has been set to {rank}!"
+  current: "&7Your current rank: {rank}"
+  list-header: "&6--- Available Ranks ---"
+  list-format: "&a{rank} &7- {prefix}"
+
+# Error Messages
+errors:
+  database-error: "&cDatabase error! Please contact an administrator."
+  config-error: "&cConfiguration error! Please check your config.yml file."
+  permission-error: "&cPermission system error!"
+  internal-error: "&cInternal error! Please contact an administrator."
