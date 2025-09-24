@@ -1,0 +1,147 @@
+# Turkish Language File for MiyotuGame Plugin
+
+# General Messages
+general:
+  prefix: "&6[&bMiyotuGame&6] "
+  no-permission: "&cBu komutu kullanma izniniz yok!"
+  player-not-found: "&cOyuncu bulunamadı: {player}"
+  player-offline: "&cOyuncu çevrimdışı: {player}"
+  invalid-amount: "&cGeçersiz miktar: {amount}"
+  reload-success: "&aPlugin başarıyla yeniden yüklendi!"
+  command-usage: "&cKullanım: {usage}"
+
+# Player Management
+player:
+  heal:
+    self: "&aKendini iyileştirdin!"
+    other: "&a{player} oyuncusunu iyileştirdin!"
+    received: "&a{player} tarafından iyileştirildin!"
+  fly:
+    enabled-self: "&aUçma modu etkinleştirildi!"
+    disabled-self: "&cUçma modu devre dışı bırakıldı!"
+    enabled-other: "&a{player} için uçma modu etkinleştirildi!"
+    disabled-other: "&c{player} için uçma modu devre dışı bırakıldı!"
+  god:
+    enabled-self: "&aTanrı modu etkinleştirildi! Artık hasar almazsın."
+    disabled-self: "&cTanrı modu devre dışı bırakıldı."
+    enabled-other: "&a{player} için tanrı modu etkinleştirildi!"
+    disabled-other: "&c{player} için tanrı modu devre dışı bırakıldı!"
+  teleport:
+    success: "&a{target} oyuncusuna ışınlandın!"
+    preparing: "&eIşınlanma hazırlanıyor... {seconds} saniye bekleyin."
+    cancelled-move: "&cHareket ettiğin için ışınlanma iptal edildi!"
+    cancelled-damage: "&cHasar aldığın için ışınlanma iptal edildi!"
+
+# Economy System
+economy:
+  balance:
+    self: "&aBakiyen: &e{balance} {currency}"
+    other: "&a{player} oyuncusunun bakiyesi: &e{balance} {currency}"
+  pay:
+    success-sender: "&a{player} oyuncusuna {amount} {currency} gönderdin!"
+    success-receiver: "&a{sender} oyuncusundan {amount} {currency} aldın!"
+    insufficient-funds: "&cYetersiz bakiye! Bakiyen: {balance} {currency}"
+    cannot-pay-self: "&cKendine para gönderemezsin!"
+  daily:
+    claimed: "&aGünlük ödülünü aldın! +{amount} {currency}"
+    already-claimed: "&cBugün zaten günlük ödülünü aldın! Kalan süre: {time}"
+    streak-bonus: "&6Ardışık gün bonusu: +{bonus} {currency} ({streak} gün)"
+
+# Shop System
+shop:
+  title: "&6&lSunucu Mağazası"
+  category-title: "&6&l{category} Kategorisi"
+  item-lore:
+    - "&7Fiyat: &e{price} {currency}"
+    - "&7Stok: &a{stock}"
+    - ""
+    - "&aSatın almak için tıklayın!"
+  purchase-success: "&a{item} x{amount} satın aldın! -{price} {currency}"
+  insufficient-funds: "&cYetersiz bakiye! Gerekli: {price} {currency}"
+  out-of-stock: "&cBu ürün şu anda stokta yok!"
+
+# Social Features
+social:
+  msg:
+    format: "&d[{sender} -> {receiver}] &f{message}"
+    sent: "&aMesaj gönderildi: &f{message}"
+    no-reply-target: "&cCevap verecek kimse yok!"
+  friends:
+    added: "&a{player} arkadaş listenize eklendi!"
+    removed: "&c{player} arkadaş listenizden çıkarıldı!"
+    already-friend: "&c{player} zaten arkadaşın!"
+    not-friend: "&c{player} arkadaşın değil!"
+    online: "&aArkadaşın {player} çevrimiçi oldu!"
+    offline: "&cArkadaşın {player} çevrimdışı oldu!"
+    list-header: "&6--- Arkadaş Listesi ---"
+    list-format: "&a{player} &7({status})"
+    max-friends: "&cMaksimum arkadaş sayısına ulaştın! ({max})"
+
+# Mini Games
+games:
+  parkour:
+    created: "&aParkur '{name}' oluşturuldu!"
+    deleted: "&cParkur '{name}' silindi!"
+    joined: "&aParkur '{name}' başladı! İyi şanslar!"
+    completed: "&6Tebrikler! Parkuru tamamladın! +{reward} {currency}"
+    failed: "&cParkur başarısız! Başlangıca dönüyorsun..."
+    checkpoint: "&eKontrol noktası! İlerleme kaydedildi."
+  quiz:
+    started: "&6Quiz başladı! İlk soru geliyor..."
+    question: "&e{question}"
+    correct: "&aTebrikler! Doğru cevap! +{reward} {currency}"
+    incorrect: "&cYanlış cevap! Doğru cevap: {answer}"
+    time-up: "&cSüre doldu! Doğru cevap: {answer}"
+    ended: "&6Quiz bitti! Toplam puan: {score}"
+  treasure:
+    started: "&6Hazine avı başladı! İlk ipucunu alıyorsun..."
+    hint: "&eİpucu: {hint}"
+    found: "&aTebrikler! Hazine bulundu! +{reward} {currency}"
+    failed: "&cHazine avı başarısız! Süre doldu."
+
+# Protection System
+protection:
+  region:
+    created: "&aBölge '{name}' oluşturuldu!"
+    deleted: "&cBölge '{name}' silindi!"
+    enter: "&aBölgeye girdin: {name}"
+    leave: "&cBölgeden çıktın: {name}"
+    cannot-build: "&cBu bölgede yapı yapamazsın!"
+    cannot-interact: "&cBu bölgede etkileşimde bulunamazsın!"
+    pvp-disabled: "&cBu bölgede PvP devre dışı!"
+
+# Admin Tools
+admin:
+  ban:
+    success: "&a{player} oyuncusu yasaklandı! Sebep: {reason}"
+    already-banned: "&c{player} zaten yasaklı!"
+    broadcast: "&c{player} sunucudan yasaklandı! Sebep: {reason}"
+  kick:
+    success: "&a{player} oyuncusu atıldı! Sebep: {reason}"
+    broadcast: "&c{player} sunucudan atıldı! Sebep: {reason}"
+  unban:
+    success: "&a{player} oyuncusunun yasağı kaldırıldı!"
+    not-banned: "&c{player} yasaklı değil!"
+
+# Statistics
+stats:
+  title: "&6--- {player} İstatistikleri ---"
+  playtime: "&7Oyun Süresi: &a{time}"
+  money: "&7Para: &e{money} {currency}"
+  rank: "&7Rütbe: {rank}"
+  friends: "&7Arkadaş: &a{friends}"
+  last-seen: "&7Son Görülme: &a{time}"
+
+# Ranks
+ranks:
+  set: "&a{player} oyuncusunun rütbesi {rank} olarak ayarlandı!"
+  current: "&7Mevcut rütben: {rank}"
+  list-header: "&6--- Mevcut Rütbeler ---"
+  list-format: "&a{rank} &7- {prefix}"
+
+# Error Messages
+errors:
+  database-error: "&cVeritabanı hatası! Lütfen yöneticiye bildirin."
+  config-error: "&cKonfigurasyon hatası! Lütfen config.yml dosyasını kontrol edin."
+  permission-error: "&cİzin sistemi hatası!"
+  internal-error: "&cİç hata! Lütfen yöneticiye bildirin."
