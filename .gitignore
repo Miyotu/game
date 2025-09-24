@@ -1,2 +1,7 @@
 node_modules/
 .env
+
+# Maven
+minecraft-cs2-plugin/target/
+minecraft-cs2-plugin/.idea/
+minecraft-cs2-plugin/*.iml
