@@ -1,0 +1,58 @@
+# CS2 Plugin Configuration
+
+# Database Settings
+database:
+  host: localhost
+  port: 3306
+  database: cs2_plugin
+  username: minecraft
+  password: password
+  pool-size: 10
+
+# Lobby Settings
+lobby:
+  max-players: 10
+  min-players-to-start: 2
+  waiting-time: 30
+  auto-balance-teams: true
+
+# Team Settings
+teams:
+  ct:
+    name: "Counter-Terrorists"
+    color: "&9"
+    max-players: 5
+  t:
+    name: "Terrorists"
+    color: "&c"
+    max-players: 5
+
+# NPC Settings
+npc:
+  name: "&6Join Game"
+  skin: "Notch"
+  message: "&aClick to join a CS2 game!"
+
+# Messages
+messages:
+  prefix: "&8[&6CS2&8]&r "
+  lobby-created: "&aLobby &e{lobby} &acreated successfully!"
+  lobby-set: "&aLobby spawn point set for &e{lobby}&a!"
+  joined-lobby: "&aYou joined lobby &e{lobby}&a!"
+  left-lobby: "&cYou left the lobby!"
+  team-selected: "&aYou selected team &e{team}&a!"
+  lobby-full: "&cLobby is full!"
+  not-in-lobby: "&cYou are not in a lobby!"
+  already-in-lobby: "&cYou are already in a lobby!"
+  invalid-team: "&cInvalid team! Use CT or T."
+  game-starting: "&aGame is starting in &e{time} &aseconds!"
+  no-permission: "&cYou don't have permission to use this command!"
+
+# GUI Settings
+gui:
+  lobby-selector:
+    title: "&6Select Lobby"
+    size: 54
+  team-selector:
+    title: "&6Select Team"
+    size: 27
